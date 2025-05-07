@@ -387,10 +387,11 @@ export default function Home() {
                                     const weekItem = weeks[weekKey] || { tag: '' };
                                     const gameDate = getGameDate(weekNum, weekItem.tag, weekItem.timeSlot);
 
-                                    const bgClass = weekNum % 2 === 0 ? 'bg-gray-900' : 'bg-gray-800';
-
                                     return (
-                                        <div key={weekKey} className={`${bgClass} rounded-lg mb-4 shadow border border-gray-700`}>
+                                        <div
+                                            key={weekKey}
+                                            className="bg-gray-800 border border-gray-700 rounded-xl mb-4 px-4 py-3 shadow-sm"
+                                        >
                                             <WeekRow
                                                 id={weekKey}
                                                 weekNum={weekNum}
@@ -403,6 +404,7 @@ export default function Home() {
                                         </div>
                                     );
                                 })}
+
                             </div>
                         </div>
                     </div>
@@ -592,11 +594,11 @@ const DropZone = memo(function DropZone({
         <div
             ref={setNodeRef}
             className={`rounded-lg ${isPool
-                    ? 'p-4 bg-gray-800 bg-opacity-50 min-h-[300px] border border-gray-700'
-                    : isWeek
-                        ? `p-2 flex-grow flex items-center ${hasItem ? 'bg-gray-700' : 'bg-gray-800 bg-opacity-50'
-                        } ${tagColor || ''} ${isOver ? 'ring-2 ring-red-500' : ''}`
-                        : ''
+                ? 'p-4 bg-gray-800 bg-opacity-50 min-h-[300px] border border-gray-700'
+                : isWeek
+                    ? `p-2 flex-grow flex items-center ${hasItem ? 'bg-gray-700' : 'bg-gray-800 bg-opacity-50'
+                    } ${tagColor || ''} ${isOver ? 'ring-2 ring-red-500' : ''}`
+                    : ''
                 }`}
         >
             {label && (
