@@ -24,6 +24,7 @@ interface Team {
 interface ScheduleItem {
   team?: Team;
   tag: GameTag;
+  timeSlot?: 'noon' | 'mid-day';
 }
 
 interface WeeksState {
@@ -249,57 +250,79 @@ export default function Home() {
   setWeeks((prev) => {
     // Special case: If selecting BYE tag, remove any team
     if (tag === 'BYE') {
-      const existingItem = prev[weekId];
-      if (existingItem?.team) {
-        // Create a non-nullable team reference
-        const teamToReturn: Team = {
-          id: existingItem.team.id,
-          name: existingItem.team.name,
-          color: existingItem.team.color,
-          logo: existingItem.team.logo
+        const existingItem = prev[weekId];
+        if (existingItem?.team) {
+          const teamToReturn: Team = {
+            id: existingItem.team.id,
+            name: existingItem.team.name,
+            color: existingItem.team.color,
+            logo: existingItem.team.logo,
+          };
+      
+          setTimeout(() => {
+            setPool((prevPool) => {
+              if (!prevPool.find((t) => t.id === teamToReturn.id)) {
+                return [...prevPool, teamToReturn];
+              }
+              return prevPool;
+            });
+          }, 0);
+        }
+      
+        return {
+          ...prev,
+          [weekId]: { tag, team: undefined },
         };
-        
-        // Use setTimeout to avoid state update during render
-        setTimeout(() => {
-          setPool((prevPool) => {
-            if (!prevPool.find((t) => t.id === teamToReturn.id)) {
-              return [...prevPool, teamToReturn];
-            }
-            return prevPool;
-          });
-        }, 0);
       }
       
+      // Normal case
+      const existingItem = prev[weekId] || { team: undefined };
       return {
         ...prev,
-        [weekId]: { tag, team: undefined }
+        [weekId]: { ...existingItem, tag },
       };
-    }
-    
-    // Normal case: Just update the tag
-    const existingItem = prev[weekId] || { team: undefined };
-    return {
-      ...prev,
-      [weekId]: { ...existingItem, tag }
-    };
-  });
-}, []);
+      });
+      }, []);
 
   // Get game date based on week number and tag
-  const getGameDate = useCallback((weekNum: number, tag: GameTag): string => {
+  const getGameDate = useCallback((weekNum: number, tag: GameTag, timeSlot?: 'noon' | 'mid-day'): string => {
     const weekIndex = weekNum - 1;
     if (weekIndex < 0 || weekIndex >= weekDates.length) return '';
-    
+  
     const dates = weekDates[weekIndex];
-    
-    if (tag === 'TNF' || tag === 'XMAS') {
-      return formatDate(dates.thursday);
-    } else if (tag === 'MNF') {
-      return formatDate(dates.monday);
-    } else {
-      return formatDate(dates.sunday);
+  
+    let time = '';
+    switch (tag) {
+      case 'TNF':
+      case 'MNF':
+        time = '7:15 PM';
+        return `${formatDate(dates.thursday)} • ${time}`;
+      case 'SNF':
+        time = '7:20 PM';
+        return `${formatDate(dates.sunday)} • ${time}`;
+      case 'INT':
+        time = '8:30 AM';
+        return `${formatDate(dates.sunday)} • ${time}`;
+      case 'XMAS':
+        return `${formatDate(dates.thursday)} • 12:00 PM / 3:30 PM`;
+      case 'BYE':
+        return ''; // No time shown
+      default:
+        // Regular games
+        if (timeSlot === 'mid-day') {
+          return `${formatDate(dates.sunday)} • 3:25 PM`;
+        } else {
+          return `${formatDate(dates.sunday)} • 12:00 PM`;
+        }
     }
   }, [weekDates]);
+  
+const handleTimeSlotChange = useCallback((weekId: string, slot: 'noon' | 'mid-day') => {
+    setWeeks((prev) => ({
+      ...prev,
+      [weekId]: { ...prev[weekId], timeSlot: slot },
+    }));
+  }, []);
 
   return (
     <div className='min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4'>
@@ -362,7 +385,7 @@ export default function Home() {
                   const weekNum = i + 1;
                   const weekKey = `week-${weekNum}`;
                   const weekItem = weeks[weekKey] || { tag: '' };
-                  const gameDate = getGameDate(weekNum, weekItem.tag);
+                  const gameDate = getGameDate(weekNum, weekItem.tag, weekItem.timeSlot);
                   
                   return (
                     <WeekRow
@@ -373,6 +396,7 @@ export default function Home() {
                       item={weekItem}
                       activeId={activeId}
                       onTagChange={(tag) => handleTagChange(weekKey, tag as GameTag)}
+                      onTimeSlotChange={(slot) => handleTimeSlotChange(weekKey, slot)}
                     />
                   );
                 })}
@@ -453,6 +477,7 @@ interface WeekRowProps {
   item: ScheduleItem;
   activeId: string | null;
   onTagChange: (tag: string) => void;
+  onTimeSlotChange: (slot: 'noon' | 'mid-day') => void;
 }
 
 const WeekRow = memo(function WeekRow({
@@ -509,20 +534,16 @@ const WeekRow = memo(function WeekRow({
         
         {/* Tag selector */}
         <div className='ml-2 flex-shrink-0'>
-          <select
-            value={item.tag}
-            onChange={(e) => onTagChange(e.target.value)}
-            className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 ${
-              getTagColor(item.tag as GameTag) ? 'text-white' : 'text-gray-400'
-            }`}
-            style={{ backgroundColor: getTagColor(item.tag as GameTag) || '#1f2937' }}
-          >
-            {gameTags.map((tag) => (
-              <option key={tag.value} value={tag.value}>
-                {tag.value || 'Regular'}
-              </option>
-            ))}
-          </select>
+        {item.tag === '' && (
+  <select
+    value={item.timeSlot || 'noon'}
+    onChange={(e) => onTimeSlotChange(e.target.value as 'noon' | 'mid-day')}
+    className='ml-2 bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-400'
+  >
+    <option value='noon'>12:00 PM</option>
+    <option value='mid-day'>3:25 PM</option>
+  </select>
+)}
         </div>
       </div>
     </div>
