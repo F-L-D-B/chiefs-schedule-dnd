@@ -6,7 +6,6 @@ import {
   DragStartEvent,
   useDraggable,
   useDroppable,
-  pointerWithin,
   defaultDropAnimationSideEffects,
   rectIntersection,
 } from '@dnd-kit/core';
@@ -55,17 +54,6 @@ export default function Home() {
 
   // Performance optimization - memoize modifiers
   const modifiers = useMemo(() => [restrictToWindowEdges], []);
-
-  // Custom drop animation config to reduce visual overhead
-  const dropAnimation = {
-    sideEffects: defaultDropAnimationSideEffects({
-      styles: {
-        active: {
-          opacity: '0.5',
-        },
-      },
-    }),
-  };
 
   const handleDragStart = useCallback((event: DragStartEvent): void => {
     setActiveId(event.active.id as string);
