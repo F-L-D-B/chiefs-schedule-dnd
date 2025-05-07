@@ -6,7 +6,6 @@ import {
   DragStartEvent,
   useDraggable,
   useDroppable,
-  defaultDropAnimationSideEffects,
   rectIntersection,
 } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
@@ -117,53 +116,6 @@ export default function Home() {
     [pool, weeks]
   );
 
-  // Memoize pool team list rendering
-  const poolTeams = useMemo(
-    () => (
-      <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
-        {pool.map((team) => (
-          <DraggableItem
-            key={team.id}
-            id={team.id}
-            name={team.name}
-            color={team.color}
-            from='pool'
-            isActive={activeId === team.id}
-          />
-        ))}
-      </div>
-    ),
-    [pool, activeId]
-  );
-
-  // Memoize week slots rendering
-  const weekSlots = useMemo(
-    () =>
-      Array.from({ length: 17 }, (_, i) => {
-        const weekKey = `week-${i + 1}`;
-        return (
-          <DropZone
-            key={weekKey}
-            id={weekKey}
-            label={`Week ${i + 1}`}
-            isWeek={true}
-            hasItem={!!weeks[weekKey]}
-          >
-            {weeks[weekKey] ? (
-              <DraggableItem
-                id={weeks[weekKey].id}
-                name={weeks[weekKey].name}
-                color={weeks[weekKey].color}
-                from={weekKey}
-                isActive={activeId === weeks[weekKey].id}
-              />
-            ) : null}
-          </DropZone>
-        );
-      }),
-    [weeks, activeId]
-  );
-
   return (
     <div className='min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4'>
       <div className='max-w-7xl mx-auto'>
@@ -197,7 +149,18 @@ export default function Home() {
                 </span>
               </h2>
               <DropZone id='pool' label='' isPool={true}>
-                {poolTeams}
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
+                  {pool.map((team) => (
+                    <DraggableItem
+                      key={team.id}
+                      id={team.id}
+                      name={team.name}
+                      color={team.color}
+                      from='pool'
+                      isActive={activeId === team.id}
+                    />
+                  ))}
+                </div>
               </DropZone>
             </div>
 
@@ -209,8 +172,29 @@ export default function Home() {
                   {Object.keys(weeks).length} / 17 weeks
                 </span>
               </h2>
-              <div className='bg-gray-800 bg-opacity-50 rounded-lg p-4 backdrop-blur-sm border border-gray-700'>
-                {weekSlots}
+              <div className='bg-gray-800 bg-opacity-50 rounded-lg p-4 border border-gray-700'>
+                {Array.from({ length: 17 }, (_, i) => {
+                  const weekKey = `week-${i + 1}`;
+                  return (
+                    <DropZone
+                      key={weekKey}
+                      id={weekKey}
+                      label={`Week ${i + 1}`}
+                      isWeek={true}
+                      hasItem={!!weeks[weekKey]}
+                    >
+                      {weeks[weekKey] ? (
+                        <DraggableItem
+                          id={weeks[weekKey].id}
+                          name={weeks[weekKey].name}
+                          color={weeks[weekKey].color}
+                          from={weekKey}
+                          isActive={activeId === weeks[weekKey].id}
+                        />
+                      ) : null}
+                    </DropZone>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -228,7 +212,6 @@ interface DraggableItemProps {
   isActive: boolean;
 }
 
-// Memoized draggable item to prevent unnecessary re-renders
 const DraggableItem = memo(function DraggableItem({
   id,
   name,
@@ -277,7 +260,6 @@ interface DropZoneProps {
   hasItem?: boolean;
 }
 
-// Memoized dropzone to prevent unnecessary re-renders
 const DropZone = memo(function DropZone({
   id,
   label,
