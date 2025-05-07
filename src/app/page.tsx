@@ -32,6 +32,16 @@ interface WeeksState {
   [key: string]: ScheduleItem;
 }
 
+const gameTags: { value: GameTag; label: string }[] = [
+    { value: 'TNF', label: 'Thursday Night Football' },
+    { value: 'SNF', label: 'Sunday Night Football' },
+    { value: 'MNF', label: 'Monday Night Football' },
+    { value: 'INT', label: 'International Game' },
+    { value: 'XMAS', label: 'Christmas Game' },
+    { value: 'BYE', label: 'Bye Week' },
+    { value: '', label: 'Regular Game' },
+  ];
+
 // Calculate dates for the 2025 season
 const getWeekDates = () => {
   // Starting with Thursday of week 1 (09/04/2025)
@@ -463,84 +473,92 @@ const DraggableItem = memo(function DraggableItem({
 });
 
 interface WeekRowProps {
-  id: string;
-  weekNum: number;
-  gameDate: string;
-  item: ScheduleItem;
-  activeId: string | null;
-  onTagChange: (tag: string) => void;
-  onTimeSlotChange: (slot: 'noon' | 'mid-day') => void;
-}
+    id: string;
+    weekNum: number;
+    gameDate: string;
+    item: ScheduleItem;
+    activeId: string | null;
+    onTagChange: (tag: string) => void;
+    onTimeSlotChange: (slot: 'noon' | 'mid-day') => void;
+  }
 
-const WeekRow = memo(function WeekRow({
-  id,
-  weekNum,
-  gameDate,
-  item,
-  activeId,
-  onTimeSlotChange,
-}: WeekRowProps) {
-  // Get background color based on tag
-  const getTagColor = (tag: GameTag) => {
-    switch (tag) {
-      case 'TNF': return 'bg-blue-900';
-      case 'SNF': return 'bg-purple-900';
-      case 'MNF': return 'bg-yellow-900';
-      case 'INT': return 'bg-green-900';
-      case 'XMAS': return 'bg-red-900';
-      case 'BYE': return 'bg-gray-900';
-      default: return '';
-    }
-  };
-
-  return (
-    <div className='mb-2 flex flex-col sm:flex-row items-stretch'>
-      {/* Week number and date */}
-      <div className='w-full sm:w-24 flex-shrink-0 text-gray-400 font-medium mb-1 sm:mb-0 flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-start px-2 py-1'>
-        <span>Week {weekNum}</span>
-        <span className='text-sm'>{gameDate}</span>
-      </div>
-      
-      {/* Game slot */}
-      <div className='flex-grow flex items-center'>
-        <DropZone
-          id={id}
-          isWeek={true}
-          hasItem={!!item.team || item.tag === 'BYE'}
-          tagColor={getTagColor(item.tag)}
-        >
-          {item.team ? (
-            <DraggableItem
-              id={item.team.id}
-              name={item.team.name}
-              color={item.team.color}
-              from={id}
-              isActive={activeId === item.team.id}
-            />
-          ) : item.tag === 'BYE' ? (
-            <div className='bg-gray-800 p-3 rounded-lg w-full text-center text-gray-400'>
-              BYE WEEK
-            </div>
-          ) : null}
-        </DropZone>
-        
-        {/* Tag selector */}
-        <div className='ml-2 flex-shrink-0'>
-        {item.tag === '' && (
-  <select
-    value={item.timeSlot || 'noon'}
-    onChange={(e) => onTimeSlotChange(e.target.value as 'noon' | 'mid-day')}
-    className='ml-2 bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-400'
-  >
-    <option value='noon'>12:00 PM</option>
-    <option value='mid-day'>3:25 PM</option>
-  </select>
-)}
+  const WeekRow = memo(function WeekRow({
+    id,
+    weekNum,
+    gameDate,
+    item,
+    activeId,
+    onTagChange,
+    onTimeSlotChange,
+  }: WeekRowProps) {
+    const getTagColor = (tag: GameTag) => {
+      switch (tag) {
+        case 'TNF': return 'bg-blue-900';
+        case 'SNF': return 'bg-purple-900';
+        case 'MNF': return 'bg-yellow-900';
+        case 'INT': return 'bg-green-900';
+        case 'XMAS': return 'bg-red-900';
+        case 'BYE': return 'bg-gray-900';
+        default: return '';
+      }
+    };
+  
+    return (
+      <div className='mb-2 flex flex-col sm:flex-row items-stretch'>
+        <div className='w-full sm:w-24 flex-shrink-0 text-gray-400 font-medium mb-1 sm:mb-0 flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-start px-2 py-1'>
+          <span>Week {weekNum}</span>
+          <span className='text-sm'>{gameDate}</span>
+        </div>
+  
+        <div className='flex-grow flex items-center'>
+          <DropZone
+            id={id}
+            isWeek={true}
+            hasItem={!!item.team || item.tag === 'BYE'}
+            tagColor={getTagColor(item.tag)}
+          >
+            {item.team ? (
+              <DraggableItem
+                id={item.team.id}
+                name={item.team.name}
+                color={item.team.color}
+                from={id}
+                isActive={activeId === item.team.id}
+              />
+            ) : item.tag === 'BYE' ? (
+              <div className='bg-gray-800 p-3 rounded-lg w-full text-center text-gray-400'>BYE WEEK</div>
+            ) : null}
+          </DropZone>
+  
+          <div className='ml-2 flex-shrink-0 flex gap-2'>
+            {/* Game tag dropdown */}
+            <select
+              value={item.tag}
+              onChange={(e) => onTagChange(e.target.value)}
+              className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 ${getTagColor(item.tag) ? 'text-white' : 'text-gray-400'}`}
+              style={{ backgroundColor: getTagColor(item.tag) || '#1f2937' }}
+            >
+              {gameTags.map((tag) => (
+                <option key={tag.value} value={tag.value}>{tag.label}</option>
+              ))}
+            </select>
+  
+            {/* Time slot dropdown (only for Regular games) */}
+            {item.tag === '' && (
+              <select
+                value={item.timeSlot || 'noon'}
+                onChange={(e) => onTimeSlotChange(e.target.value as 'noon' | 'mid-day')}
+                className='bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-400'
+              >
+                <option value='noon'>12:00 PM</option>
+                <option value='mid-day'>3:25 PM</option>
+              </select>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  });
 
 interface DropZoneProps {
   id: string;
