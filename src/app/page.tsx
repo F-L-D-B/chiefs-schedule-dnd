@@ -18,6 +18,7 @@ interface Team {
   id: string;
   name: string;
   color: string;
+  logo: string;
 }
 
 interface ScheduleItem {
@@ -62,24 +63,24 @@ const formatDate = (date: Date): string => {
 
 const opponentsList: Team[] = [
   // Home Games
-  { id: 'broncos-home', name: 'Broncos (Home)', color: '#FB4F14' },
-  { id: 'raiders-home', name: 'Raiders (Home)', color: '#000000' },
-  { id: 'chargers-home', name: 'Chargers (Home)', color: '#0080C6' },
-  { id: 'ravens-home', name: 'Ravens (Home)', color: '#241773' },
-  { id: 'lions-home', name: 'Lions (Home)', color: '#0076B6' },
-  { id: 'texans-home', name: 'Texans (Home)', color: '#03202F' },
-  { id: 'colts-home', name: 'Colts (Home)', color: '#002C5F' },
-  { id: 'eagles-home', name: 'Eagles (Home)', color: '#004C54' },
-  { id: 'commanders-home', name: 'Commanders (Home)', color: '#5A1414' },
+  { id: 'broncos-home', name: 'Broncos (Home)', color: '#FB4F14', logo: '/logos/broncos.png' },
+  { id: 'raiders-home', name: 'Raiders (Home)', color: '#000000', logo: '/logos/raiders.png' },
+  { id: 'chargers-home', name: 'Chargers (Home)', color: '#0080C6', logo: '/logos/chargers.png' },
+  { id: 'ravens-home', name: 'Ravens (Home)', color: '#241773', logo: '/logos/ravens.png' },
+  { id: 'lions-home', name: 'Lions (Home)', color: '#0076B6', logo: '/logos/lions.png' },
+  { id: 'texans-home', name: 'Texans (Home)', color: '#03202F', logo: '/logos/texans.png' },
+  { id: 'colts-home', name: 'Colts (Home)', color: '#002C5F', logo: '/logos/colts.png' },
+  { id: 'eagles-home', name: 'Eagles (Home)', color: '#004C54', logo: '/logos/eagles.png' },
+  { id: 'commanders-home', name: 'Commanders (Home)', color: '#5A1414', logo: '/logos/commanders.png' },
   // Away Games
-  { id: 'broncos-away', name: 'Broncos (Away)', color: '#FB4F14' },
-  { id: 'raiders-away', name: 'Raiders (Away)', color: '#000000' },
-  { id: 'chargers-away', name: 'Chargers (Away)', color: '#0080C6' },
-  { id: 'bills-away', name: 'Bills (Away)', color: '#00338D' },
-  { id: 'cowboys-away', name: 'Cowboys (Away)', color: '#003594' },
-  { id: 'jaguars-away', name: 'Jaguars (Away)', color: '#006778' },
-  { id: 'giants-away', name: 'Giants (Away)', color: '#0B2265' },
-  { id: 'titans-away', name: 'Titans (Away)', color: '#0C2340' },
+  { id: 'broncos-away', name: 'Broncos (Away)', color: '#FB4F14', logo: '/logos/broncos.png' },
+  { id: 'raiders-away', name: 'Raiders (Away)', color: '#000000', logo: '/logos/raiders.png' },
+  { id: 'chargers-away', name: 'Chargers (Away)', color: '#0080C6', logo: '/logos/chargers.png' },
+  { id: 'bills-away', name: 'Bills (Away)', color: '#00338D', logo: '/logos/bills.png' },
+  { id: 'cowboys-away', name: 'Cowboys (Away)', color: '#003594', logo: '/logos/cowboys.png' },
+  { id: 'jaguars-away', name: 'Jaguars (Away)', color: '#006778', logo: '/logos/jaguars.png' },
+  { id: 'giants-away', name: 'Giants (Away)', color: '#0B2265', logo: '/logos/giants.png' },
+  { id: 'titans-away', name: 'Titans (Away)', color: '#0C2340', logo: '/logos/titans.png' },
 ];
 
 // Available game tags
@@ -110,156 +111,179 @@ export default function Home() {
   }, []);
 
   const handleDragEnd = useCallback(
-    (event: DragEndEvent): void => {
-      const { active, over } = event;
-      setActiveId(null);
+  (event: DragEndEvent): void => {
+    const { active, over } = event;
+    setActiveId(null);
 
-      if (!over) return;
+    if (!over) return;
 
-      const activeId = active.id as string;
-      const overId = over.id as string;
-      const activeFrom = active.data.current?.from as string | undefined;
+    const activeId = active.id as string;
+    const overId = over.id as string;
+    const activeFrom = active.data.current?.from as string | undefined;
 
-      // Dragged into team pool
-      if (overId === 'pool') {
-        if (activeFrom?.startsWith('week-')) {
-          // Get the team from the week and add it back to pool
-          const weekItem = weeks[activeFrom];
-          if (weekItem?.team) {
-            // Create a complete copy of the team object to ensure type safety
-            const teamToAddToPool: Team = {
-              id: weekItem.team.id,
-              name: weekItem.team.name,
-              color: weekItem.team.color
-            };
-            
-            setPool((prev) => {
-              // Check if this team is already in the pool
-              if (!prev.find((t) => t.id === teamToAddToPool.id)) {
-                return [...prev, teamToAddToPool];
-              }
-              return prev;
-            });
-          }
-
-          // Update the week to remove the team but keep the tag
-          setWeeks((prev) => {
-            const updated = { ...prev };
-            if (updated[activeFrom]) {
-              const tag = updated[activeFrom].tag;
-              updated[activeFrom] = { tag, team: undefined };
-            }
-            return updated;
-          });
-        }
-      }
-
-      // Dragged into a week
-      else if (overId.startsWith('week-')) {
-        const fromPool = pool.find((t) => t.id === activeId);
-        
-        if (fromPool) {
-          // Dragging from pool to week
-          setWeeks((prev) => {
-            const existingItem = prev[overId] || { tag: '' };
-            return { 
-              ...prev, 
-              [overId]: { 
-                ...existingItem,
-                team: fromPool 
-              } 
-            };
-          });
-          
-          setPool((prev) => prev.filter((t) => t.id !== activeId));
-        } else if (activeFrom?.startsWith('week-')) {
-          // Dragging from week to week
-          const sourceWeek = weeks[activeFrom];
-          
-          if (sourceWeek?.team) {
-            const sourceTeam: Team = {
-              id: sourceWeek.team.id,
-              name: sourceWeek.team.name,
-              color: sourceWeek.team.color
-            };
-            
-            // Update both weeks
-            setWeeks((prev) => {
-              const targetWeek = prev[overId] || { tag: '' };
-              const updatedWeeks = { ...prev };
-              
-              // If target already has a team, swap them
-              if (targetWeek.team) {
-                const targetTeam: Team = {
-                  id: targetWeek.team.id,
-                  name: targetWeek.team.name,
-                  color: targetWeek.team.color
-                };
-                
-                updatedWeeks[activeFrom] = { 
-                  ...sourceWeek, 
-                  team: targetTeam 
-                };
-              } else {
-                updatedWeeks[activeFrom] = { 
-                  ...sourceWeek, 
-                  team: undefined 
-                };
-              }
-              
-              updatedWeeks[overId] = { 
-                ...targetWeek, 
-                team: sourceTeam 
-              };
-              
-              return updatedWeeks;
-            });
-          }
-        }
-      }
-    },
-    [pool, weeks]
-  );
-
-  // Handle tag change for a week
-  const handleTagChange = useCallback((weekId: string, tag: GameTag) => {
-    setWeeks((prev) => {
-      // Special case: If selecting BYE tag, remove any team
-      if (tag === 'BYE') {
-        const existingItem = prev[weekId];
-        if (existingItem?.team) {
-          // Create a non-nullable team reference
-          const teamToReturn: Team = {
-            id: existingItem.team.id,
-            name: existingItem.team.name,
-            color: existingItem.team.color
+    // Dragged into team pool
+    if (overId === 'pool') {
+      if (activeFrom?.startsWith('week-')) {
+        // Get the team from the week and add it back to pool
+        const weekItem = weeks[activeFrom];
+        if (weekItem?.team) {
+          // Create a complete copy of the team object to ensure type safety
+          const teamToAddToPool: Team = {
+            id: weekItem.team.id,
+            name: weekItem.team.name,
+            color: weekItem.team.color,
+            logo: weekItem.team.logo
           };
           
-          // Use setTimeout to avoid state update during render
-          setTimeout(() => {
+          setPool((prev) => {
+            // Check if this team is already in the pool
+            if (!prev.find((t) => t.id === teamToAddToPool.id)) {
+              return [...prev, teamToAddToPool];
+            }
+            return prev;
+          });
+        }
+
+        // Update the week to remove the team but keep the tag
+        setWeeks((prev) => {
+          const updated = { ...prev };
+          if (updated[activeFrom]) {
+            const tag = updated[activeFrom].tag;
+            updated[activeFrom] = { tag, team: undefined };
+          }
+          return updated;
+        });
+      }
+    }
+
+    // Dragged into a week
+    else if (overId.startsWith('week-')) {
+      const fromPool = pool.find((t) => t.id === activeId);
+      
+      if (fromPool) {
+        // Dragging from pool to week
+        setWeeks((prev) => {
+          const existingItem = prev[overId] || { tag: '' };
+          
+          // If the target week already has a team, move it back to the pool
+          if (existingItem.team) {
+            const displacedTeam = {
+              id: existingItem.team.id,
+              name: existingItem.team.name,
+              color: existingItem.team.color,
+              logo: existingItem.team.logo
+            };
+            
+            // Add the displaced team back to the pool
             setPool((prevPool) => {
-              if (!prevPool.find((t) => t.id === teamToReturn.id)) {
-                return [...prevPool, teamToReturn];
+              if (!prevPool.find(t => t.id === displacedTeam.id)) {
+                return [...prevPool, displacedTeam];
               }
               return prevPool;
             });
-          }, 0);
-        }
+          }
+          
+          return { 
+            ...prev, 
+            [overId]: { 
+              ...existingItem,
+              team: fromPool 
+            } 
+          };
+        });
         
-        return {
-          ...prev,
-          [weekId]: { tag, team: undefined }
+        setPool((prev) => prev.filter((t) => t.id !== activeId));
+      } else if (activeFrom?.startsWith('week-')) {
+        // Dragging from week to week
+        const sourceWeek = weeks[activeFrom];
+        
+        if (sourceWeek?.team) {
+          const sourceTeam: Team = {
+            id: sourceWeek.team.id,
+            name: sourceWeek.team.name,
+            color: sourceWeek.team.color,
+            logo: sourceWeek.team.logo
+          };
+          
+          // Update both weeks
+          setWeeks((prev) => {
+            const targetWeek = prev[overId] || { tag: '' };
+            const updatedWeeks = { ...prev };
+            
+            // If target already has a team, swap them
+            if (targetWeek.team) {
+              const targetTeam: Team = {
+                id: targetWeek.team.id,
+                name: targetWeek.team.name,
+                color: targetWeek.team.color,
+                logo: targetWeek.team.logo
+              };
+              
+              updatedWeeks[activeFrom] = { 
+                ...sourceWeek, 
+                team: targetTeam 
+              };
+            } else {
+              updatedWeeks[activeFrom] = { 
+                ...sourceWeek, 
+                team: undefined 
+              };
+            }
+            
+            updatedWeeks[overId] = { 
+              ...targetWeek, 
+              team: sourceTeam 
+            };
+            
+            return updatedWeeks;
+          });
+        }
+      }
+    }
+  },
+  [pool, weeks]
+);
+
+  // Handle tag change for a week
+  const handleTagChange = useCallback((weekId: string, tag: GameTag) => {
+  setWeeks((prev) => {
+    // Special case: If selecting BYE tag, remove any team
+    if (tag === 'BYE') {
+      const existingItem = prev[weekId];
+      if (existingItem?.team) {
+        // Create a non-nullable team reference
+        const teamToReturn: Team = {
+          id: existingItem.team.id,
+          name: existingItem.team.name,
+          color: existingItem.team.color,
+          logo: existingItem.team.logo
         };
+        
+        // Use setTimeout to avoid state update during render
+        setTimeout(() => {
+          setPool((prevPool) => {
+            if (!prevPool.find((t) => t.id === teamToReturn.id)) {
+              return [...prevPool, teamToReturn];
+            }
+            return prevPool;
+          });
+        }, 0);
       }
       
-      // Normal case: Just update the tag
-      const existingItem = prev[weekId] || { team: undefined };
       return {
         ...prev,
-        [weekId]: { ...existingItem, tag }
+        [weekId]: { tag, team: undefined }
       };
-    });
-  }, []);
+    }
+    
+    // Normal case: Just update the tag
+    const existingItem = prev[weekId] || { team: undefined };
+    return {
+      ...prev,
+      [weekId]: { ...existingItem, tag }
+    };
+  });
+}, []);
 
   // Get game date based on week number and tag
   const getGameDate = useCallback((weekNum: number, tag: GameTag): string => {
@@ -381,6 +405,10 @@ const DraggableItem = memo(function DraggableItem({
     data: { id, name, color, from },
   });
 
+  // Find the team to get its logo
+  const team = opponentsList.find(team => team.id === id);
+  const logo = team?.logo || '';
+
   const style = transform
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
@@ -399,9 +427,19 @@ const DraggableItem = memo(function DraggableItem({
       }`}
     >
       <div className='flex items-center'>
-        <div className='w-6 h-6 bg-gray-700 rounded-full mr-2 flex items-center justify-center'>
-          <span className='text-xs'>{name.charAt(0)}</span>
-        </div>
+        {logo ? (
+          <div className='w-6 h-6 mr-2 flex-shrink-0'>
+            <img 
+              src={logo} 
+              alt={name.split(' ')[0]} 
+              className='w-full h-full object-contain'
+            />
+          </div>
+        ) : (
+          <div className='w-6 h-6 bg-gray-700 rounded-full mr-2 flex items-center justify-center'>
+            <span className='text-xs'>{name.charAt(0)}</span>
+          </div>
+        )}
         <span className='font-medium truncate'>{name}</span>
       </div>
     </div>
