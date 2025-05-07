@@ -332,6 +332,7 @@ export default function Home() {
                         <div className='w-12 h-12 bg-red-600 rounded-full flex items-center justify-center'>
                         <Image
                             src={'/logos/chiefs.png'}
+                            alt='Chiefs Logo'
                             width={24}
                             height={24}
                             className='object-contain w-full h-full'
