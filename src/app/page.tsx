@@ -92,7 +92,7 @@ export default function Home() {
       else if (overId.startsWith('week-')) {
         const fromPool = pool.find((t) => t.id === activeId);
         const fromWeekKey = Object.entries(weeks).find(
-          ([_, val]) => val?.id === activeId
+          ([, team]) => team?.id === activeId
         )?.[0];
         const item = fromPool || weeks[fromWeekKey || ''];
 
