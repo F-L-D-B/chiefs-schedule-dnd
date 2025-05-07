@@ -126,9 +126,10 @@ export default function Home() {
           // Get the team from the week and add it back to pool
           const weekItem = weeks[activeFrom];
           if (weekItem?.team) {
+            const teamToAdd = weekItem.team; // Create a local variable to satisfy TypeScript
             setPool((prev) => {
-              if (!prev.find((t) => t.id === weekItem.team?.id)) {
-                return [...prev, weekItem.team];
+              if (!prev.find((t) => t.id === teamToAdd.id)) {
+                return [...prev, teamToAdd];
               }
               return prev;
             });
