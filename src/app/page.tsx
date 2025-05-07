@@ -326,7 +326,7 @@ export default function Home() {
 
     return (
         <div className='min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4'>
-            <div className='max-w-9xl mx-auto'>
+            <div className='max-w-8xl mx-auto'>
                 <header className='mb-8 pt-4'>
                     <div className='flex items-center justify-center space-x-4 mb-2'>
                         <div className='w-12 h-12 bg-red-600 rounded-full flex items-center justify-center'>
