@@ -504,16 +504,21 @@ interface WeekRowProps {
     };
   
     return (
-      <div className='mb-2 flex flex-col sm:flex-row items-stretch'>
-        <div className='w-full sm:w-24 flex-shrink-0 text-gray-400 font-medium mb-1 sm:mb-0 flex flex-row sm:flex-col items-center sm:items-start justify-between sm:justify-start px-2 py-1'>
-          <span>Week {weekNum}</span>
-          <span className='text-sm'>{gameDate}</span>
+        <div className='mb-2 flex flex-row items-start gap-4'>
+        {/* Week Info (Fixed width) */}
+        <div className='w-24 flex flex-col items-start text-sm text-gray-300'>
+          <span className='font-semibold text-white'>Week {weekNum}</span>
+          <span>{gameDate.split('•')[0].trim()}</span>
+          {gameDate.includes('•') && (
+            <span>{gameDate.split('•')[1].trim()}</span>
+          )}
         </div>
-  
-        <div className='flex-grow flex items-center'>
+      
+        {/* Drop Zone */}
+        <div className='flex-grow'>
           <DropZone
             id={id}
-            isWeek={true}
+            isWeek
             hasItem={!!item.team || item.tag === 'BYE'}
             tagColor={getTagColor(item.tag)}
           >
@@ -529,34 +534,33 @@ interface WeekRowProps {
               <div className='bg-gray-800 p-3 rounded-lg w-full text-center text-gray-400'>BYE WEEK</div>
             ) : null}
           </DropZone>
-  
-          <div className='ml-2 flex-shrink-0 flex gap-2'>
-            {/* Game tag dropdown */}
+        </div>
+      
+        {/* Controls */}
+        <div className='flex flex-col gap-2'>
+          <select
+            value={item.tag}
+            onChange={(e) => onTagChange(e.target.value)}
+            className='bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300'
+          >
+            {gameTags.map((tag) => (
+              <option key={tag.value} value={tag.value}>{tag.label}</option>
+            ))}
+          </select>
+      
+          {item.tag === '' && (
             <select
-              value={item.tag}
-              onChange={(e) => onTagChange(e.target.value)}
-              className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 ${getTagColor(item.tag) ? 'text-white' : 'text-gray-400'}`}
-              style={{ backgroundColor: getTagColor(item.tag) || '#1f2937' }}
+              value={item.timeSlot || 'noon'}
+              onChange={(e) => onTimeSlotChange(e.target.value as 'noon' | 'mid-day')}
+              className='bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300'
             >
-              {gameTags.map((tag) => (
-                <option key={tag.value} value={tag.value}>{tag.label}</option>
-              ))}
+              <option value='noon'>12:00 PM</option>
+              <option value='mid-day'>3:25 PM</option>
             </select>
-  
-            {/* Time slot dropdown (only for Regular games) */}
-            {item.tag === '' && (
-              <select
-                value={item.timeSlot || 'noon'}
-                onChange={(e) => onTimeSlotChange(e.target.value as 'noon' | 'mid-day')}
-                className='bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-400'
-              >
-                <option value='noon'>12:00 PM</option>
-                <option value='mid-day'>3:25 PM</option>
-              </select>
-            )}
-          </div>
+          )}
         </div>
       </div>
+      
     );
   });
 
