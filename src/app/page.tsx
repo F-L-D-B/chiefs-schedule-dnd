@@ -126,10 +126,17 @@ export default function Home() {
           // Get the team from the week and add it back to pool
           const weekItem = weeks[activeFrom];
           if (weekItem?.team) {
-            const teamToAdd = weekItem.team; // Create a local variable to satisfy TypeScript
+            // Create a complete copy of the team object to ensure type safety
+            const teamToAddToPool: Team = {
+              id: weekItem.team.id,
+              name: weekItem.team.name,
+              color: weekItem.team.color
+            };
+            
             setPool((prev) => {
-              if (!prev.find((t) => t.id === teamToAdd.id)) {
-                return [...prev, teamToAdd];
+              // Check if this team is already in the pool
+              if (!prev.find((t) => t.id === teamToAddToPool.id)) {
+                return [...prev, teamToAddToPool];
               }
               return prev;
             });
@@ -139,7 +146,8 @@ export default function Home() {
           setWeeks((prev) => {
             const updated = { ...prev };
             if (updated[activeFrom]) {
-              updated[activeFrom] = { ...updated[activeFrom], team: undefined };
+              const tag = updated[activeFrom].tag;
+              updated[activeFrom] = { tag, team: undefined };
             }
             return updated;
           });
@@ -166,32 +174,42 @@ export default function Home() {
           setPool((prev) => prev.filter((t) => t.id !== activeId));
         } else if (activeFrom?.startsWith('week-')) {
           // Dragging from week to week
-          const draggedWeekItem = weeks[activeFrom];
+          const sourceWeek = weeks[activeFrom];
           
-          if (draggedWeekItem?.team) {
-            // Update target week
+          if (sourceWeek?.team) {
+            const sourceTeam: Team = {
+              id: sourceWeek.team.id,
+              name: sourceWeek.team.name,
+              color: sourceWeek.team.color
+            };
+            
+            // Update both weeks
             setWeeks((prev) => {
-              const targetExistingItem = prev[overId] || { tag: '' };
-              const sourceExistingItem = prev[activeFrom];
-              
-              // If target already has a team, swap them
+              const targetWeek = prev[overId] || { tag: '' };
               const updatedWeeks = { ...prev };
               
-              if (targetExistingItem.team) {
+              // If target already has a team, swap them
+              if (targetWeek.team) {
+                const targetTeam: Team = {
+                  id: targetWeek.team.id,
+                  name: targetWeek.team.name,
+                  color: targetWeek.team.color
+                };
+                
                 updatedWeeks[activeFrom] = { 
-                  ...sourceExistingItem, 
-                  team: targetExistingItem.team 
+                  ...sourceWeek, 
+                  team: targetTeam 
                 };
               } else {
                 updatedWeeks[activeFrom] = { 
-                  ...sourceExistingItem, 
+                  ...sourceWeek, 
                   team: undefined 
                 };
               }
               
               updatedWeeks[overId] = { 
-                ...targetExistingItem, 
-                team: draggedWeekItem.team 
+                ...targetWeek, 
+                team: sourceTeam 
               };
               
               return updatedWeeks;
@@ -210,13 +228,22 @@ export default function Home() {
       if (tag === 'BYE') {
         const existingItem = prev[weekId];
         if (existingItem?.team) {
-          // Add team back to pool
-          setPool((prevPool) => {
-            if (!prevPool.find((t) => t.id === existingItem.team?.id)) {
-              return [...prevPool, existingItem.team];
-            }
-            return prevPool;
-          });
+          // Create a non-nullable team reference
+          const teamToReturn: Team = {
+            id: existingItem.team.id,
+            name: existingItem.team.name,
+            color: existingItem.team.color
+          };
+          
+          // Use setTimeout to avoid state update during render
+          setTimeout(() => {
+            setPool((prevPool) => {
+              if (!prevPool.find((t) => t.id === teamToReturn.id)) {
+                return [...prevPool, teamToReturn];
+              }
+              return prevPool;
+            });
+          }, 0);
         }
         
         return {
