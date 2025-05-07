@@ -347,9 +347,9 @@ export default function Home() {
                     collisionDetection={collisionDetection}
                     modifiers={modifiers}
                 >
-                    <div className='flex flex-col md:flex-row gap-6'>
+                    <div className='flex flex-col lg:flex-row gap-8 items-start'>
                         {/* Team Pool */}
-                        <div className='w-full md:w-1/2 mb-6 md:mb-0'>
+                        <div className='w-full lg:max-w-xs'>
                             <h2 className='text-xl font-bold mb-3 text-red-500 flex items-center'>
                                 <span className='mr-2'>Available Teams</span>
                                 <span className='text-sm bg-red-800 text-white px-2 py-1 rounded'>
@@ -373,14 +373,14 @@ export default function Home() {
                         </div>
 
                         {/* Weeks */}
-                        <div className='w-full md:w-2/3'>
+                        <div className='w-full flex-grow'>
                             <h2 className='text-xl font-bold mb-3 text-red-500 flex items-center'>
                                 <span className='mr-2'>Schedule</span>
                                 <span className='text-sm bg-red-800 text-white px-2 py-1 rounded'>
                                     {Object.values(weeks).filter(item => item.team || item.tag === 'BYE').length} / 18 weeks
                                 </span>
                             </h2>
-                            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                            <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                                 {Array.from({ length: 18 }, (_, i) => {
                                     const weekNum = i + 1;
                                     const weekKey = `week-${weekNum}`;
