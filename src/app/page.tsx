@@ -357,7 +357,7 @@ export default function Home() {
                                 </span>
                             </h2>
                             <DropZone id='pool' label='' isPool={true}>
-                                <div className='grid grid-cols-1 sm:grid-cols-2 gap-2'>
+                                <div className='grid grid-cols-1 gap-2'>
                                     {pool.map((team) => (
                                         <DraggableItem
                                             key={team.id}
@@ -373,14 +373,14 @@ export default function Home() {
                         </div>
 
                         {/* Weeks */}
-                        <div className='w-full md:w-1/2'>
+                        <div className='w-full md:w-2/3'>
                             <h2 className='text-xl font-bold mb-3 text-red-500 flex items-center'>
                                 <span className='mr-2'>Schedule</span>
                                 <span className='text-sm bg-red-800 text-white px-2 py-1 rounded'>
                                     {Object.values(weeks).filter(item => item.team || item.tag === 'BYE').length} / 18 weeks
                                 </span>
                             </h2>
-                            <div className='bg-gray-800 bg-opacity-50 rounded-lg p-4 border border-gray-700'>
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
                                 {Array.from({ length: 18 }, (_, i) => {
                                     const weekNum = i + 1;
                                     const weekKey = `week-${weekNum}`;
@@ -390,7 +390,7 @@ export default function Home() {
                                     return (
                                         <div
                                             key={weekKey}
-                                            className="bg-gray-800 border border-gray-700 rounded-xl mb-4 px-4 py-3 shadow-sm"
+                                            className='bg-gray-800 border border-gray-700 rounded-xl px-4 py-3 shadow-sm'
                                         >
                                             <WeekRow
                                                 id={weekKey}
@@ -404,9 +404,9 @@ export default function Home() {
                                         </div>
                                     );
                                 })}
-
                             </div>
                         </div>
+
                     </div>
                 </DndContext>
             </div>
