@@ -9,8 +9,10 @@ import {
     rectIntersection,
 } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
-import { memo, useCallback, useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState, useRef } from 'react';
 import Image from 'next/image';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 // Game Tags
 type GameTag = 'TNF' | 'SNF' | 'MNF' | 'INT' | 'XMAS' | 'BYE' | '';
@@ -41,6 +43,24 @@ const gameTags: { value: GameTag; label: string }[] = [
     { value: 'BYE', label: 'Bye Week' },
     { value: '', label: 'Regular Game' },
 ];
+
+const exportRef = useRef<HTMLDivElement>(null);
+
+const handleExport = async () => {
+    if (!exportRef.current) return;
+
+    const canvas = await html2canvas(exportRef.current);
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+    });
+
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save('chiefs_schedule_2025.pdf');
+};
 
 // Calculate dates for the 2025 season
 const getWeekDates = () => {
@@ -419,6 +439,37 @@ export default function Home() {
 
                     </div>
                 </DndContext>
+
+                <div ref={exportRef} className='hidden-print w-full p-6' id="export-schedule">
+                    <h2 className="text-2xl font-bold text-center mb-4">2025 Chiefs Schedule</h2>
+                    <Image src="/logos/chiefs.png" alt="Chiefs Logo" width={60} height={60} className="mx-auto mb-4" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {Array.from({ length: 18 }, (_, i) => {
+                            const weekNum = i + 1;
+                            const weekKey = `week-${weekNum}`;
+                            const weekItem = weeks[weekKey] || { tag: '' };
+                            const gameDate = getGameDate(weekNum, weekItem.tag, weekItem.timeSlot);
+
+                            return (
+                                <div key={weekKey} className="p-4 bg-white text-black rounded-md shadow border">
+                                    <strong>Week {weekNum}</strong>
+                                    <div>{gameDate}</div>
+                                    <div>{weekItem.team?.name || 'TBD'}</div>
+                                    <div>{gameTags.find(t => t.value === weekItem.tag)?.label || 'Regular Game'}</div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                <button
+                    onClick={handleExport}
+                    className="mt-10 px-6 py-3 bg-red-600 hover:bg-red-700 rounded text-white font-semibold shadow-lg"
+                >
+                    Export Fancy Schedule
+                </button>
+
+
             </div>
         </div>
     );
@@ -631,3 +682,4 @@ const DropZone = memo(function DropZone({
         </div>
     );
 });
+
