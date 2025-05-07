@@ -44,23 +44,7 @@ const gameTags: { value: GameTag; label: string }[] = [
     { value: '', label: 'Regular Game' },
 ];
 
-const exportRef = useRef<HTMLDivElement>(null);
 
-const handleExport = async () => {
-    if (!exportRef.current) return;
-
-    const canvas = await html2canvas(exportRef.current);
-    const imgData = canvas.toDataURL('image/png');
-
-    const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'px',
-        format: [canvas.width, canvas.height],
-    });
-
-    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-    pdf.save('chiefs_schedule_2025.pdf');
-};
 
 // Calculate dates for the 2025 season
 const getWeekDates = () => {
@@ -346,6 +330,24 @@ export default function Home() {
             [weekId]: { ...prev[weekId], timeSlot: slot },
         }));
     }, []);
+
+    const exportRef = useRef<HTMLDivElement>(null);
+
+const handleExport = async () => {
+    if (!exportRef.current) return;
+
+    const canvas = await html2canvas(exportRef.current);
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+    });
+
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save('chiefs_schedule_2025.pdf');
+};
 
     return (
         <div className='min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-4'>
