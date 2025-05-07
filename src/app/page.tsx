@@ -358,7 +358,7 @@ export default function Home() {
                 >
                     <div className='flex flex-col lg:flex-row gap-8 items-start'>
                         {/* Team Pool */}
-                        <div className='w-full lg:max-w-xs'>
+                        <div className='w-full max-w-full sm:max-w-md lg:max-w-sm xl:max-w-md 2xl:max-w-lg'>
                             <h2 className='text-xl font-bold mb-3 text-red-500 flex items-center'>
                                 <span className='mr-2'>Available Teams</span>
                                 <span className='text-sm bg-red-800 text-white px-2 py-1 rounded'>
