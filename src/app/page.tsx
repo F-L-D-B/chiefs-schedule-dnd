@@ -366,7 +366,7 @@ export default function Home() {
                                 </span>
                             </h2>
                             <DropZone id='pool' label='' isPool={true}>
-                                <div className='grid grid-cols-1 gap-2'>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-full xl:max-w-[1200px] mx-auto">
                                     {pool.map((team) => (
                                         <DraggableItem
                                             key={team.id}
@@ -389,7 +389,7 @@ export default function Home() {
                                     {Object.values(weeks).filter(item => item.team || item.tag === 'BYE').length} / 18 weeks
                                 </span>
                             </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full max-w-full xl:max-w-[1200px]">
                                 {Array.from({ length: 18 }, (_, i) => {
                                     const weekNum = i + 1;
                                     const weekKey = `week-${weekNum}`;
@@ -415,6 +415,7 @@ export default function Home() {
                                 })}
                             </div>
                         </div>
+
 
                     </div>
                 </DndContext>
