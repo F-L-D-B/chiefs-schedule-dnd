@@ -97,7 +97,10 @@ const opponentsList: Team[] = [
 
 export default function Home() {
     const [pool, setPool] = useState<Team[]>(opponentsList);
-    const [weeks, setWeeks] = useState<WeeksState>({});
+    const [weeks, setWeeks] = useState<WeeksState>({
+        'week-17': { tag: 'XMAS' }
+    });
+
     const [activeId, setActiveId] = useState<string | null>(null);
     const weekDates = useMemo(() => getWeekDates(), []);
 
@@ -503,9 +506,9 @@ const WeekRow = memo(function WeekRow({
 }: WeekRowProps) {
     const getTagColor = (tag: GameTag) => {
         switch (tag) {
-            case 'TNF': return 'bg-blue-900';
-            case 'SNF': return 'bg-purple-900';
-            case 'MNF': return 'bg-yellow-900';
+            case 'TNF': return 'bg-purple-900';
+            case 'SNF': return 'bg-yellow-900';
+            case 'MNF': return 'bg-white';
             case 'INT': return 'bg-green-900';
             case 'XMAS': return 'bg-red-900';
             case 'BYE': return 'bg-gray-900';
@@ -552,14 +555,22 @@ const WeekRow = memo(function WeekRow({
                 <select
                     value={item.tag}
                     onChange={(e) => onTagChange(e.target.value)}
-                    className='bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300'
+                    disabled={id === 'week-17'}
+                    className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300 ${id === 'week-17' ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                     {gameTags.map((tag) => (
-                        <option key={tag.value} value={tag.value}>{tag.label}</option>
+                        <option
+                            key={tag.value}
+                            value={tag.value}
+                            disabled={id !== 'week-17' && tag === 'XMAS'}
+                        >
+                            {tag.label}
+                        </option>
                     ))}
                 </select>
 
-                {item.tag === '' && (
+
+                {item.tag === '' && id !== 'week-17' && (
                     <select
                         value={item.timeSlot || 'noon'}
                         onChange={(e) => onTimeSlotChange(e.target.value as 'noon' | 'mid-day')}
