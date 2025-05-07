@@ -478,6 +478,7 @@ const WeekRow = memo(function WeekRow({
   gameDate,
   item,
   activeId,
+  onTimeSlotChange,
 }: WeekRowProps) {
   // Get background color based on tag
   const getTagColor = (tag: GameTag) => {
