@@ -366,7 +366,7 @@ export default function Home() {
                                 </span>
                             </h2>
                             <DropZone id='pool' label='' isPool={true}>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-full xl:max-w-[1200px] mx-auto">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-4">
                                     {pool.map((team) => (
                                         <DraggableItem
                                             key={team.id}
@@ -379,6 +379,7 @@ export default function Home() {
                                     ))}
                                 </div>
                             </DropZone>
+
                         </div>
 
                         {/* Weeks */}
