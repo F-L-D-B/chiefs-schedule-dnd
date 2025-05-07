@@ -562,7 +562,7 @@ const WeekRow = memo(function WeekRow({
                         <option
                             key={tag.value}
                             value={tag.value}
-                            disabled={id !== 'week-17' && tag === 'XMAS'}
+                            disabled={id !== 'week-17' && tag.value === 'XMAS'}
                         >
                             {tag.label}
                         </option>
