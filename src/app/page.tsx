@@ -10,6 +10,7 @@ import {
 } from '@dnd-kit/core';
 import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { memo, useCallback, useMemo, useState } from 'react';
+import Image from 'next/image';
 
 // Game Tags
 type GameTag = 'TNF' | 'SNF' | 'MNF' | 'INT' | 'XMAS' | 'BYE' | '';
@@ -82,17 +83,6 @@ const opponentsList: Team[] = [
   { id: 'jaguars-away', name: 'Jaguars (Away)', color: '#006778', logo: '/logos/jaguars.png' },
   { id: 'giants-away', name: 'Giants (Away)', color: '#0B2265', logo: '/logos/giants.png' },
   { id: 'titans-away', name: 'Titans (Away)', color: '#0C2340', logo: '/logos/titans.png' },
-];
-
-// Available game tags
-const gameTags: { value: GameTag; label: string }[] = [
-  { value: 'TNF', label: 'Thursday Night Football' },
-  { value: 'SNF', label: 'Sunday Night Football' },
-  { value: 'MNF', label: 'Monday Night Football' },
-  { value: 'INT', label: 'International Game' },
-  { value: 'XMAS', label: 'Christmas Game' },
-  { value: 'BYE', label: 'Bye Week' },
-  { value: '', label: 'Regular Game' },
 ];
 
 export default function Home() {
@@ -453,11 +443,13 @@ const DraggableItem = memo(function DraggableItem({
       <div className='flex items-center'>
         {logo ? (
           <div className='w-6 h-6 mr-2 flex-shrink-0'>
-            <img 
-              src={logo} 
-              alt={name.split(' ')[0]} 
-              className='w-full h-full object-contain'
-            />
+            <Image
+  src={logo}
+  alt={name.split(' ')[0]}
+  width={24}
+  height={24}
+  className='object-contain w-full h-full'
+/>
           </div>
         ) : (
           <div className='w-6 h-6 bg-gray-700 rounded-full mr-2 flex items-center justify-center'>
@@ -486,7 +478,6 @@ const WeekRow = memo(function WeekRow({
   gameDate,
   item,
   activeId,
-  onTagChange,
 }: WeekRowProps) {
   // Get background color based on tag
   const getTagColor = (tag: GameTag) => {
