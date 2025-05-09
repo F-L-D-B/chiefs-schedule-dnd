@@ -305,7 +305,8 @@ export default function Home() {
                 time = '8:30 AM';
                 return `${formatDate(dates.sunday)} • ${time}`;
             case 'XMAS':
-                return `${formatDate(dates.thursday)} • 12:00 PM / 3:30 PM`;
+                const xmasDate = new Date(2025, 11, 25); // December 25, 2025
+                return `${formatDate(xmasDate)} • 12:00 PM / 3:30 PM`;
             case 'BYE':
                 return ''; // No time shown
             default:
