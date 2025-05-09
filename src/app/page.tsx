@@ -44,30 +44,26 @@ const gameTags: { value: GameTag; label: string }[] = [
 
 // Calculate dates for the 2025 season
 const getWeekDates = () => {
-    // Starting with Thursday of week 1 (09/04/2025)
-    const startDate = new Date(2025, 8, 4); // Month is 0-indexed (8 = September)
     const weekDates = [];
+    const msPerWeek = 7 * 24 * 60 * 60 * 1000;
+    const baseDate = new Date(2025, 8, 4); // 09/04/2025
 
-    for (let week = 1; week <= 18; week++) {
-        const thursdayDate = new Date(startDate);
-        thursdayDate.setDate(startDate.getDate() + (week - 1) * 7);
-
-        const sundayDate = new Date(thursdayDate);
-        sundayDate.setDate(thursdayDate.getDate() + 3);
-
-        const mondayDate = new Date(thursdayDate);
-        mondayDate.setDate(thursdayDate.getDate() + 4);
+    for (let week = 0; week < 18; week++) {
+        const thursdayDate = new Date(baseDate.getTime() + week * msPerWeek);
+        const sundayDate = new Date(thursdayDate.getTime() + 3 * 24 * 60 * 60 * 1000);
+        const mondayDate = new Date(thursdayDate.getTime() + 4 * 24 * 60 * 60 * 1000);
 
         weekDates.push({
-            week,
-            thursday: new Date(thursdayDate),
-            sunday: new Date(sundayDate),
-            monday: new Date(mondayDate),
+            week: week + 1,
+            thursday: thursdayDate,
+            sunday: sundayDate,
+            monday: mondayDate,
         });
     }
 
     return weekDates;
 };
+
 
 const formatDate = (date: Date): string => {
     return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit' });
