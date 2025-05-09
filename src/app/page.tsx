@@ -297,9 +297,11 @@ export default function Home() {
         let time = '';
         switch (tag) {
             case 'TNF':
-            case 'MNF':
                 time = '7:15 PM';
                 return `${formatDate(dates.thursday)} • ${time}`;
+            case 'MNF':
+                time = '7:15 PM';
+                return `${formatDate(dates.monday)} • ${time}`;
             case 'SNF':
                 time = '7:20 PM';
                 return `${formatDate(dates.sunday)} • ${time}`;
