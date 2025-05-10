@@ -528,7 +528,6 @@ const WeekRow = memo(function WeekRow({
     return (
         <div
         className='relative mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 overflow-hidden'
-        style={cardStyle}
         >
 
             {(isBrazilGame || isUKGame) && (
