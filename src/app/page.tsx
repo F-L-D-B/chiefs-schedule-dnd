@@ -538,12 +538,25 @@ const WeekRow = memo(function WeekRow({
         className='relative mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 overflow-hidden'
         >
 
-            {(isBrazilGame || isUKGame) && (
+            {(isBrazilGame) && (
               <div
                 className="absolute inset-0 opacity-20"
                 style={{
-                  backgroundImage: `url(${isBrazilGame ? "/flags/brazil.png" : "/flags/UK.png"})`,
+                  backgroundImage: `url("/flags/brazil.png")`,
                   backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                  zIndex: 0
+                }}
+              ></div>
+            )}
+
+            {(isUKGame) && (
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage: `url("/flags/UK.png")`,
+                  backgroundSize: '150% 150%',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',
                   zIndex: 0
