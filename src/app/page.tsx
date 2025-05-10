@@ -559,6 +559,9 @@ const WeekRow = memo(function WeekRow({
         }
         : {};
 
+    const isUKFlag = item.tag === 'INT' && item.internationalLocation === 'UK';
+    const weekTextClass = isUKFlag ? 'text-[#1E3A8A] font-semibold' : 'text-gray-300';
+
 
     return (
         <div
@@ -583,12 +586,12 @@ const WeekRow = memo(function WeekRow({
 
 
             {/* Week Info (Fixed width) */}
-            <div className='w-24 flex flex-col items-start text-sm text-gray-300'>
-                <span className='font-semibold text-white'>Week {weekNum}</span>
-                <span>{gameDate.split('•')[0].trim()}</span>
-                {gameDate.includes('•') && (
-                    <span>{gameDate.split('•')[1].trim()}</span>
-                )}
+            <div className={`w-24 flex flex-col items-start text-sm ${weekTextClass}`}>
+              <span className='font-semibold text-white'>Week {weekNum}</span>
+              <span>{gameDate.split('•')[0].trim()}</span>
+              {gameDate.includes('•') && (
+                <span>{gameDate.split('•')[1].trim()}</span>
+              )}
             </div>
 
             {/* Drop Zone */}
