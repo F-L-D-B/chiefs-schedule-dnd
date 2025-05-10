@@ -57,6 +57,7 @@ const getWeekDates = () => {
 
         weekDates.push({
             week: week + 1,
+            friday: fridayDate,
             thursday: thursdayDate,
             sunday: sundayDate,
             monday: mondayDate,
