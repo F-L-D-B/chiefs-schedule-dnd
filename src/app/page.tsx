@@ -567,7 +567,6 @@ const cardStyle = isBrazilGame
     }
   : {};
 
-    const isUKFlag = item.tag === 'INT' && item.internationalLocation === 'UK';
     const weekTextClass =
   isInternational && item.internationalLocation === 'UK'
     ? 'text-[#1E3A8A] font-semibold'
