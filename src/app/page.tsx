@@ -546,46 +546,47 @@ const WeekRow = memo(function WeekRow({
         const internationalFlag = isInternational ? intlFlagMap[item.internationalLocation!] : null;
 
     const isBrazilGame =
-    weekNum === 1 &&
-    item.tag === 'FNF' &&
-    item.team?.name === 'Chargers (Away)';
+  weekNum === 1 &&
+  item.tag === 'FNF' &&
+  item.team?.name === 'Chargers (Away)';
 
-    const cardStyle = isBrazilGame
-        ? {
-            backgroundImage: "url('/flags/brazil.png')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-        }
-        : {};
+const intlFlagMap: Record<string, string> = {
+  UK: '/flags/UK.png',
+};
+
+const isInternational = item.tag === 'INT' && item.internationalLocation;
+const internationalFlag = isInternational ? intlFlagMap[item.internationalLocation!] : null;
+
+// Final background logic — Brazil has priority, then UK
+const cardStyle = isBrazilGame
+  ? {
+      backgroundImage: "url('/flags/brazil.png')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }
+  : internationalFlag
+  ? {
+      backgroundImage: `url('${internationalFlag}')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }
+  : {};
 
     const isUKFlag = item.tag === 'INT' && item.internationalLocation === 'UK';
     const weekTextClass = isUKFlag ? 'text-[#1E3A8A] font-semibold' : 'text-gray-300';
 
 
-   return (
-  <div className="relative w-full rounded-lg overflow-hidden">
-    {/* Background flag image if needed */}
-    {(internationalFlag || cardStyle.backgroundImage) && (
-      <div
-        className="absolute inset-0 rounded-lg"
-        style={{
-          ...(internationalFlag
-            ? {
-                backgroundImage: `url('${internationalFlag}')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-              }
-            : cardStyle),
-        }}
-      />
-    )}
-
-    {/* Foreground content */}
-    <div className="relative z-10 mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 bg-gray-900 bg-opacity-80 backdrop-blur-md">
+  return (
+  <div
+    className="relative w-full rounded-lg overflow-hidden mb-4"
+    style={cardStyle}
+  >
+    {/* Foreground card content */}
+    <div className="relative z-10 p-4 border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 bg-gray-900 bg-opacity-80 backdrop-blur-md rounded-lg">
       {/* Week Info */}
-      <div className={`w-24 flex flex-col items-start text-sm ${weekTextClass}`}>
+      <div className={`w-24 flex flex-col items-start text-sm ${isInternational && item.internationalLocation === 'UK' ? 'text-[#1E3A8A] font-semibold' : 'text-gray-300'}`}>
         <span className='font-semibold text-white'>Week {weekNum}</span>
         <span>{gameDate.split('•')[0].trim()}</span>
         {gameDate.includes('•') && (
@@ -623,9 +624,7 @@ const WeekRow = memo(function WeekRow({
           value={item.tag}
           onChange={(e) => onTagChange(e.target.value)}
           disabled={id === 'week-17'}
-          className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300 ${
-            id === 'week-17' ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+          className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300 ${id === 'week-17' ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           {gameTags.map((tag) => (
             <option
@@ -669,6 +668,7 @@ const WeekRow = memo(function WeekRow({
     </div>
   </div>
 );
+
 
 });
 
