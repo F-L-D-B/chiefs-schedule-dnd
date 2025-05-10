@@ -560,14 +560,14 @@ const WeekRow = memo(function WeekRow({
 
             {/* Week Info (Fixed width) */}
             <div className="w-24 flex flex-col items-start text-sm">
-              <span className={isUKGame ? 'font-semibold text-blue-500' : 'font-semibold text-white'}>
+              <span className={isUKGame ? 'font-semibold text-white bg-blue-700 px-1 rounded' : 'font-semibold text-white'}>
                 Week {weekNum}
               </span>
-              <span className={isUKGame ? 'text-[#1E3A8A]' : 'text-gray-300'}>
+              <span className={isUKGame ? 'text-white bg-blue-700 px-1 rounded' : 'text-gray-300'}>
                 {gameDate.split('•')[0].trim()}
               </span>
               {gameDate.includes('•') && (
-                <span className={isUKGame ? 'text-[#1E3A8A]' : 'text-gray-300'}>
+                <span className={isUKGame ? 'text-white bg-blue-700 px-1 rounded' : 'text-gray-300'}>
                   {gameDate.split('•')[1].trim()}
                 </span>
               )}
