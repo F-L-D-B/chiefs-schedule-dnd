@@ -26,7 +26,7 @@ interface ScheduleItem {
     team?: Team;
     tag: GameTag;
     timeSlot?: 'noon' | 'mid-day';
-    internationalLocation?: 'Germany' | 'Spain' | 'Ireland' | 'UK';
+    internationalLocation?: 'UK';
 }
 
 interface WeeksState {
@@ -535,9 +535,6 @@ const WeekRow = memo(function WeekRow({
         }
 
         const intlFlagMap: Record<string, string> = {
-          Germany: '/flags/germany.png',
-          Spain: '/flags/spain.png',
-          Ireland: '/flags/ireland.png',
           UK: '/flags/uk.png',
         };
 
