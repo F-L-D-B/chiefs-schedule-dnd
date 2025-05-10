@@ -560,7 +560,6 @@ const WeekRow = memo(function WeekRow({
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',
                   zIndex: 0,
-                  pointerEvents: 'none',
                 }}
               ></div>
             )}
