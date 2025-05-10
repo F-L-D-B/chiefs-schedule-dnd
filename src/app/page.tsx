@@ -511,6 +511,7 @@ interface WeekRowProps {
     activeId: string | null;
     onTagChange: (tag: string) => void;
     onTimeSlotChange: (slot: 'noon' | 'mid-day') => void;
+    onInternationalChange: (location: ScheduleItem['internationalLocation']) => void; // ✅ Add this line
 }
 
 const WeekRow = memo(function WeekRow({
