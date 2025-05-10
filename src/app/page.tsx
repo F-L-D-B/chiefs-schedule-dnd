@@ -575,12 +575,17 @@ const cardStyle = isBrazilGame
 
 
   return (
+  <div className="relative w-full rounded-lg overflow-hidden mb-4">
+  {/* Background layer */}
   <div
-    className="relative w-full rounded-lg overflow-hidden mb-4"
-    style={cardStyle}
-  >
+    className="absolute inset-0"
+    style={{
+      ...cardStyle,
+      zIndex: 0,
+    }}
+  />
     {/* Foreground card content */}
-    <div className="relative z-10 p-4 border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 bg-gray-900 bg-opacity-80 backdrop-blur-md rounded-lg">
+  <div className="relative z-10 p-4 border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 bg-gray-900 bg-opacity-80 backdrop-blur-md rounded-lg">
       {/* Week Info */}
       <div className={`w-24 flex flex-col items-start text-sm ${weekTextClass}`}>
         <span className='font-semibold text-white'>Week {weekNum}</span>
