@@ -563,17 +563,21 @@ const WeekRow = memo(function WeekRow({
     return (
         <div
               className='mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4'
+            <div className="relative w-full min-h-[120px] rounded-lg overflow-hidden">
+  <div
+    className="absolute inset-0"
               style={{
-                ...cardStyle,
-                ...(internationalFlag
-                  ? {
-                      backgroundImage: `url('${internationalFlag}')`,
-                      backgroundSize: 'contain',
-                      backgroundPosition: 'center',
-                      backgroundRepeat: 'no-repeat',
-                    }
-                  : {}),
-              }}
+                  ...(internationalFlag && !cardStyle.backgroundImage
+                    ? {
+                        backgroundImage: `url('${internationalFlag}')`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                      }
+                    : cardStyle),
+                }}
+      />
+            </div>
             >
 
 
