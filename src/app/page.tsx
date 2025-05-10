@@ -568,7 +568,11 @@ const cardStyle = isBrazilGame
   : {};
 
     const isUKFlag = item.tag === 'INT' && item.internationalLocation === 'UK';
-    const weekTextClass = isUKFlag ? 'text-[#1E3A8A] font-semibold' : 'text-gray-300';
+    const weekTextClass =
+  isInternational && item.internationalLocation === 'UK'
+    ? 'text-[#1E3A8A] font-semibold'
+    : 'text-gray-300';
+
 
 
   return (
@@ -579,7 +583,7 @@ const cardStyle = isBrazilGame
     {/* Foreground card content */}
     <div className="relative z-10 p-4 border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 bg-gray-900 bg-opacity-80 backdrop-blur-md rounded-lg">
       {/* Week Info */}
-      <div className={`w-24 flex flex-col items-start text-sm ${isInternational && item.internationalLocation === 'UK' ? 'text-[#1E3A8A] font-semibold' : 'text-gray-300'}`}>
+      <div className={`w-24 flex flex-col items-start text-sm ${weekTextClass}`}>
         <span className='font-semibold text-white'>Week {weekNum}</span>
         <span>{gameDate.split('•')[0].trim()}</span>
         {gameDate.includes('•') && (
