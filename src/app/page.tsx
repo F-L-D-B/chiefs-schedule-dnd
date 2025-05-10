@@ -539,7 +539,7 @@ const WeekRow = memo(function WeekRow({
     };
 
      const intlFlagMap: Record<string, string> = {
-          UK: '/flags/uk.png',
+          UK: '/flags/UK.png',
         };
 
         const isInternational = item.tag === 'INT' && item.internationalLocation;
