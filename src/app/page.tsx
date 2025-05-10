@@ -568,7 +568,7 @@ const WeekRow = memo(function WeekRow({
                 ...(internationalFlag
                   ? {
                       backgroundImage: `url('${internationalFlag}')`,
-                      backgroundSize: 'cover',
+                      backgroundSize: 'contain',
                       backgroundPosition: 'center',
                       backgroundRepeat: 'no-repeat',
                     }
