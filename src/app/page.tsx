@@ -534,15 +534,14 @@ const WeekRow = memo(function WeekRow({
             case 'BYE': return 'bg-gray-900';
             default: return '';
         }
+    };
 
-        const intlFlagMap: Record<string, string> = {
+     const intlFlagMap: Record<string, string> = {
           UK: '/flags/uk.png',
         };
 
         const isInternational = item.tag === 'INT' && item.internationalLocation;
         const internationalFlag = isInternational ? intlFlagMap[item.internationalLocation!] : null;
-
-    };
 
     const isBrazilGame =
     weekNum === 1 &&
