@@ -550,13 +550,6 @@ const WeekRow = memo(function WeekRow({
   item.tag === 'FNF' &&
   item.team?.name === 'Chargers (Away)';
 
-const intlFlagMap: Record<string, string> = {
-  UK: '/flags/UK.png',
-};
-
-const isInternational = item.tag === 'INT' && item.internationalLocation;
-const internationalFlag = isInternational ? intlFlagMap[item.internationalLocation!] : null;
-
 // Final background logic — Brazil has priority, then UK
 const cardStyle = isBrazilGame
   ? {
