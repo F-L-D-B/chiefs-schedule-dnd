@@ -530,15 +530,30 @@ const WeekRow = memo(function WeekRow({
     item.tag === 'FNF' &&
     item.team?.name === 'Chargers (Away)';
 
-    const cardStyle = isBrazilGame
+    const isUKGame =
+    item.tag === 'INT' &&
+    item.team?.name === 'Jaguars (Away)';
+
+    const cardStyle =
+      isBrazilGame
         ? {
             backgroundImage: "url('/flags/brazil.png')",
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-        }
-        : {};
+          }
+        : isUKGame
+        ? {
+            backgroundImage: "url('/flags/UK.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }
+    : {};
 
+    const weekTextClass = isUKGame
+      ? 'text-[#1E3A8A] font-semibold' // Slate blue
+      : 'text-gray-300';
 
     return (
         <div
@@ -548,7 +563,7 @@ const WeekRow = memo(function WeekRow({
 
 
             {/* Week Info (Fixed width) */}
-            <div className='w-24 flex flex-col items-start text-sm text-gray-300'>
+            <div className='w-24 flex flex-col items-start text-sm ${weekTextClass}'>
                 <span className='font-semibold text-white'>Week {weekNum}</span>
                 <span>{gameDate.split('•')[0].trim()}</span>
                 {gameDate.includes('•') && (
