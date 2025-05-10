@@ -556,7 +556,7 @@ const WeekRow = memo(function WeekRow({
                 className="absolute inset-0 opacity-20"
                 style={{
                   backgroundImage: `url("/flags/UK.png")`,
-                  backgroundSize: '90% auto',
+                  backgroundSize: '90% 100%',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',
                   zIndex: 0,
