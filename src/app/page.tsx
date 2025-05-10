@@ -512,6 +512,7 @@ const WeekRow = memo(function WeekRow({
     onTimeSlotChange,
 }: WeekRowProps) {
     const getTagColor = (tag: GameTag) => {
+        if (weekNum === 1 && tag === 'FNF') return '';
         switch (tag) {
             case 'TNF': return 'bg-purple-900';
             case 'FNF': return "bg-orange-900";
