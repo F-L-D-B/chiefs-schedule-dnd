@@ -95,7 +95,7 @@ const opponentsList: Team[] = [
     { id: 'titans-away', name: 'Titans (Away)', color: '#0C2340', logo: '/logos/titans.png' },
 ];
 
-const internationalLocations = ['Germany', 'Spain', 'Ireland', 'UK'] as const;
+const internationalLocations = ['UK'] as const;
 
 export default function Home() {
     const [pool, setPool] = useState<Team[]>(opponentsList);
@@ -425,6 +425,7 @@ export default function Home() {
                                                 activeId={activeId}
                                                 onTagChange={(tag) => handleTagChange(weekKey, tag as GameTag)}
                                                 onTimeSlotChange={(slot) => handleTimeSlotChange(weekKey, slot)}
+                                                onInternationalChange={(location) => handleInternationalChange(weekKey, location)}
                                             />
                                         </div>
                                     );
