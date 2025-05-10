@@ -26,7 +26,6 @@ interface ScheduleItem {
     team?: Team;
     tag: GameTag;
     timeSlot?: 'noon' | 'mid-day';
-    internationalLocation?: 'UK';
 }
 
 interface WeeksState {
@@ -95,8 +94,6 @@ const opponentsList: Team[] = [
     { id: 'titans-away', name: 'Titans (Away)', color: '#0C2340', logo: '/logos/titans.png' },
 ];
 
-const internationalLocations = ['UK'] as const;
-
 export default function Home() {
     const [pool, setPool] = useState<Team[]>(opponentsList);
     const [weeks, setWeeks] = useState<WeeksState>({
@@ -114,13 +111,6 @@ export default function Home() {
 
     const handleDragStart = useCallback((event: DragStartEvent): void => {
         setActiveId(event.active.id as string);
-    }, []);
-
-    const handleInternationalChange = useCallback((weekId: string, location: ScheduleItem['internationalLocation']) => {
-          setWeeks((prev) => ({
-            ...prev,
-            [weekId]: { ...prev[weekId], internationalLocation: location },
-          }));
     }, []);
 
     const handleDragEnd = useCallback(
@@ -425,7 +415,6 @@ export default function Home() {
                                                 activeId={activeId}
                                                 onTagChange={(tag) => handleTagChange(weekKey, tag as GameTag)}
                                                 onTimeSlotChange={(slot) => handleTimeSlotChange(weekKey, slot)}
-                                                onInternationalChange={(location) => handleInternationalChange(weekKey, location)}
                                             />
                                         </div>
                                     );
@@ -511,7 +500,6 @@ interface WeekRowProps {
     activeId: string | null;
     onTagChange: (tag: string) => void;
     onTimeSlotChange: (slot: 'noon' | 'mid-day') => void;
-    onInternationalChange: (location: ScheduleItem['internationalLocation']) => void; // ✅ Add this line
 }
 
 const WeekRow = memo(function WeekRow({
@@ -522,7 +510,6 @@ const WeekRow = memo(function WeekRow({
     activeId,
     onTagChange,
     onTimeSlotChange,
-    onInternationalChange,
 }: WeekRowProps) {
     const getTagColor = (tag: GameTag) => {
         if (weekNum === 1 && tag === 'FNF') return '';
@@ -538,139 +525,93 @@ const WeekRow = memo(function WeekRow({
         }
     };
 
-     const intlFlagMap: Record<string, string> = {
-          UK: '/flags/UK.png',
-        };
-
-        const isInternational = item.tag === 'INT' && item.internationalLocation;
-        const internationalFlag = isInternational ? intlFlagMap[item.internationalLocation!] : null;
-
     const isBrazilGame =
-  weekNum === 1 &&
-  item.tag === 'FNF' &&
-  item.team?.name === 'Chargers (Away)';
+    weekNum === 1 &&
+    item.tag === 'FNF' &&
+    item.team?.name === 'Chargers (Away)';
 
-// Final background logic — Brazil has priority, then UK
-const cardStyle = isBrazilGame
-  ? {
-      backgroundImage: "url('/flags/brazil.png')",
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }
-  : internationalFlag
-  ? {
-      backgroundImage: `url('${internationalFlag}')`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }
-  : {};
-
-    const weekTextClass =
-  isInternational && item.internationalLocation === 'UK'
-    ? 'text-[#1E3A8A] font-semibold'
-    : 'text-gray-300';
+    const cardStyle = isBrazilGame
+        ? {
+            backgroundImage: "url('/flags/brazil.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+        }
+        : {};
 
 
-
-  return (
-  <div className="relative w-full rounded-lg overflow-hidden mb-4">
-  {/* Background layer */}
-  <div
-    className="absolute inset-0"
-    style={{
-      ...cardStyle,
-      zIndex: 0,
-    }}
-  />
-    {/* Foreground card content */}
-  <div className="relative z-10 p-4 border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 bg-gray-900 bg-opacity-80 backdrop-blur-md rounded-lg">
-      {/* Week Info */}
-      <div className={`w-24 flex flex-col items-start text-sm ${weekTextClass}`}>
-        <span className='font-semibold text-white'>Week {weekNum}</span>
-        <span>{gameDate.split('•')[0].trim()}</span>
-        {gameDate.includes('•') && (
-          <span>{gameDate.split('•')[1].trim()}</span>
-        )}
-      </div>
-
-      {/* Drop Zone */}
-      <div className='flex-grow'>
-        <DropZone
-          id={id}
-          isWeek
-          hasItem={!!item.team || item.tag === 'BYE'}
-          tagColor={getTagColor(item.tag)}
+    return (
+        <div
+        className='mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4'
+        style={cardStyle}
         >
-          {item.team ? (
-            <DraggableItem
-              id={item.team.id}
-              name={item.team.name}
-              color={item.team.color}
-              from={id}
-              isActive={activeId === item.team.id}
-            />
-          ) : item.tag === 'BYE' ? (
-            <div className='bg-gray-800 p-3 rounded-lg w-full text-center text-gray-400'>
-              BYE WEEK
+
+
+            {/* Week Info (Fixed width) */}
+            <div className='w-24 flex flex-col items-start text-sm text-gray-300'>
+                <span className='font-semibold text-white'>Week {weekNum}</span>
+                <span>{gameDate.split('•')[0].trim()}</span>
+                {gameDate.includes('•') && (
+                    <span>{gameDate.split('•')[1].trim()}</span>
+                )}
             </div>
-          ) : null}
-        </DropZone>
-      </div>
 
-      {/* Controls */}
-      <div className='flex flex-col gap-2'>
-        <select
-          value={item.tag}
-          onChange={(e) => onTagChange(e.target.value)}
-          disabled={id === 'week-17'}
-          className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300 ${id === 'week-17' ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          {gameTags.map((tag) => (
-            <option
-              key={tag.value}
-              value={tag.value}
-              disabled={id !== 'week-17' && tag.value === 'XMAS'}
-            >
-              {tag.label}
-            </option>
-          ))}
-        </select>
+            {/* Drop Zone */}
+            <div className='flex-grow'>
+                <DropZone
+                    id={id}
+                    isWeek
+                    hasItem={!!item.team || item.tag === 'BYE'}
+                    tagColor={getTagColor(item.tag)}
+                >
+                    {item.team ? (
+                        <DraggableItem
+                            id={item.team.id}
+                            name={item.team.name}
+                            color={item.team.color}
+                            from={id}
+                            isActive={activeId === item.team.id}
+                        />
+                    ) : item.tag === 'BYE' ? (
+                        <div className='bg-gray-800 p-3 rounded-lg w-full text-center text-gray-400'>BYE WEEK</div>
+                    ) : null}
+                </DropZone>
+            </div>
 
-        {item.tag === '' && id !== 'week-17' && (
-          <select
-            value={item.timeSlot || 'noon'}
-            onChange={(e) => onTimeSlotChange(e.target.value as 'noon' | 'mid-day')}
-            className='bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300'
-          >
-            <option value='noon'>12:00 PM</option>
-            <option value='mid-day'>3:25 PM</option>
-          </select>
-        )}
-
-        {item.tag === 'INT' && (
-          <select
-            value={item.internationalLocation || ''}
-            onChange={(e) =>
-              onInternationalChange(e.target.value as ScheduleItem['internationalLocation'])
-            }
-            className='bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300'
-          >
-            <option value=''>Select Location</option>
-            {internationalLocations.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
-    </div>
-  </div>
-);
+            {/* Controls */}
+            <div className='flex flex-col gap-2'>
+                <select
+                    value={item.tag}
+                    onChange={(e) => onTagChange(e.target.value)}
+                    disabled={id === 'week-17'}
+                    className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300 ${id === 'week-17' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                    {gameTags.map((tag) => (
+                        <option
+                            key={tag.value}
+                            value={tag.value}
+                            disabled={id !== 'week-17' && tag.value === 'XMAS'}
+                        >
+                            {tag.label}
+                        </option>
+                    ))}
+                </select>
 
 
+                {item.tag === '' && id !== 'week-17' && (
+                    <select
+                        value={item.timeSlot || 'noon'}
+                        onChange={(e) => onTimeSlotChange(e.target.value as 'noon' | 'mid-day')}
+                        className='bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300'
+                    >
+                        <option value='noon'>12:00 PM</option>
+                        <option value='mid-day'>3:25 PM</option>
+                    </select>
+                )}
+            </div>
+        </div>
+
+    );
 });
 
 interface DropZoneProps {
