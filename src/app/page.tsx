@@ -522,6 +522,7 @@ const WeekRow = memo(function WeekRow({
     activeId,
     onTagChange,
     onTimeSlotChange,
+    onInternationalChange,
 }: WeekRowProps) {
     const getTagColor = (tag: GameTag) => {
         if (weekNum === 1 && tag === 'FNF') return '';
