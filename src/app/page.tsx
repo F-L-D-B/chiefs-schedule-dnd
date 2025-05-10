@@ -13,7 +13,7 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 // Game Tags
-type GameTag = 'TNF' | 'SNF' | 'MNF' | 'INT' | 'XMAS' | 'BYE' | '';
+type GameTag = 'TNF' | 'FNF' | 'SNF' | 'MNF' | 'INT' | 'XMAS' | 'BYE' | '';
 
 interface Team {
     id: string;
@@ -34,6 +34,7 @@ interface WeeksState {
 
 const gameTags: { value: GameTag; label: string }[] = [
     { value: 'TNF', label: 'Thursday Night Football' },
+    { value: 'FNF', label: 'Friday Night Football' },
     { value: 'SNF', label: 'Sunday Night Football' },
     { value: 'MNF', label: 'Monday Night Football' },
     { value: 'INT', label: 'International Game' },
@@ -50,6 +51,7 @@ const getWeekDates = () => {
 
     for (let week = 0; week < 18; week++) {
         const thursdayDate = new Date(baseDate.getTime() + week * msPerWeek);
+        const fridayDate = new Date(thursdayDate.getTime() + 2 * 24 * 60 * 60 * 1000);
         const sundayDate = new Date(thursdayDate.getTime() + 3 * 24 * 60 * 60 * 1000);
         const mondayDate = new Date(thursdayDate.getTime() + 4 * 24 * 60 * 60 * 1000);
 
@@ -295,6 +297,9 @@ export default function Home() {
             case 'TNF':
                 time = '7:15 PM';
                 return `${formatDate(dates.thursday)} • ${time}`;
+            case 'FNF':
+                time = '7:15 PM';
+                return `${formatDate(dates.friday)} • ${time}`;
             case 'MNF':
                 time = '7:15 PM';
                 return `${formatDate(dates.monday)} • ${time}`;
@@ -508,6 +513,7 @@ const WeekRow = memo(function WeekRow({
     const getTagColor = (tag: GameTag) => {
         switch (tag) {
             case 'TNF': return 'bg-purple-900';
+            case 'FNF': return "bg-orange-900";
             case 'SNF': return 'bg-yellow-900';
             case 'MNF': return 'bg-white';
             case 'INT': return 'bg-green-900';
