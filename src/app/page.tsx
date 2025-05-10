@@ -541,7 +541,6 @@ const WeekRow = memo(function WeekRow({
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            opacity: 0.15,
           }
         : isUKGame
         ? {
@@ -549,7 +548,6 @@ const WeekRow = memo(function WeekRow({
             backgroundSize: '100% 100%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
-            opacity: 0.15,
           }
     : {};
 
