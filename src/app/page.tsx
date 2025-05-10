@@ -524,8 +524,27 @@ const WeekRow = memo(function WeekRow({
         }
     };
 
+    const isBrazilGame =
+    weekNum === 1 &&
+    item.tag === 'FNF' &&
+    item.team?.name === 'Chargers (Away)';
+
+    const cardStyle = isBrazilGame
+        ? {
+            backgroundImage: "url('/flags/brazil.png')",
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+        }
+        : {};
+
+
     return (
-        <div className='mb-4 p-4 rounded-lg border border-gray-700 bg-gray-900 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4'>
+        <div
+        className='mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4'
+        style={cardStyle}
+        >
+
 
             {/* Week Info (Fixed width) */}
             <div className='w-24 flex flex-col items-start text-sm text-gray-300'>
