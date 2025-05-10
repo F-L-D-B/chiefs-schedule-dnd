@@ -546,7 +546,7 @@ const WeekRow = memo(function WeekRow({
         : isUKGame
         ? {
             backgroundImage: "url('/flags/UK.png')",
-            backgroundSize: '100% 80%',
+            backgroundSize: '100% 100%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             opacity: 0.15,
