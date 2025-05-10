@@ -26,6 +26,7 @@ interface ScheduleItem {
     team?: Team;
     tag: GameTag;
     timeSlot?: 'noon' | 'mid-day';
+    internationalLocation?: 'Germany' | 'Spain' | 'Ireland' | 'UK';
 }
 
 interface WeeksState {
@@ -94,6 +95,8 @@ const opponentsList: Team[] = [
     { id: 'titans-away', name: 'Titans (Away)', color: '#0C2340', logo: '/logos/titans.png' },
 ];
 
+const internationalLocations = ['Germany', 'Spain', 'Ireland', 'UK'] as const;
+
 export default function Home() {
     const [pool, setPool] = useState<Team[]>(opponentsList);
     const [weeks, setWeeks] = useState<WeeksState>({
@@ -111,6 +114,13 @@ export default function Home() {
 
     const handleDragStart = useCallback((event: DragStartEvent): void => {
         setActiveId(event.active.id as string);
+    }, []);
+
+    const handleInternationalChange = useCallback((weekId: string, location: ScheduleItem['internationalLocation']) => {
+          setWeeks((prev) => ({
+            ...prev,
+            [weekId]: { ...prev[weekId], internationalLocation: location },
+          }));
     }, []);
 
     const handleDragEnd = useCallback(
@@ -523,6 +533,17 @@ const WeekRow = memo(function WeekRow({
             case 'BYE': return 'bg-gray-900';
             default: return '';
         }
+
+        const intlFlagMap: Record<string, string> = {
+          Germany: '/flags/germany.png',
+          Spain: '/flags/spain.png',
+          Ireland: '/flags/ireland.png',
+          UK: '/flags/uk.png',
+        };
+
+        const isInternational = item.tag === 'INT' && item.internationalLocation;
+        const internationalFlag = isInternational ? intlFlagMap[item.internationalLocation!] : null;
+
     };
 
     const isBrazilGame =
@@ -542,9 +563,20 @@ const WeekRow = memo(function WeekRow({
 
     return (
         <div
-        className='mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4'
-        style={cardStyle}
-        >
+              className='mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4'
+              style={{
+                ...cardStyle,
+                ...(internationalFlag
+                  ? {
+                      backgroundImage: `url('${internationalFlag}')`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                    }
+                  : {}),
+              }}
+            >
+
 
 
             {/* Week Info (Fixed width) */}
@@ -607,6 +639,21 @@ const WeekRow = memo(function WeekRow({
                         <option value='noon'>12:00 PM</option>
                         <option value='mid-day'>3:25 PM</option>
                     </select>
+                )}
+
+                {item.tag === 'INT' && (
+                  <select
+                    value={item.internationalLocation || ''}
+                    onChange={(e) => onInternationalChange(e.target.value as ScheduleItem['internationalLocation'])}
+                    className='bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300'
+                  >
+                    <option value=''>Select Location</option>
+                    {internationalLocations.map((loc) => (
+                      <option key={loc} value={loc}>
+                        {loc}
+                      </option>
+                    ))}
+                  </select>
                 )}
             </div>
         </div>
