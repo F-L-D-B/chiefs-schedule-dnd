@@ -525,6 +525,14 @@ const WeekRow = memo(function WeekRow({
         }
     };
 
+    const isBrazilGame =
+    item.tag === 'FNF' &&
+    item.team?.name === 'Chargers (Away)';
+
+    const isUKGame =
+    item.tag === 'INT' &&
+    item.team?.name === 'Jaguars (Away)';
+
     return (
         <div
         className='relative mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 overflow-hidden'
