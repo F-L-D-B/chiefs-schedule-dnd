@@ -551,15 +551,18 @@ const WeekRow = memo(function WeekRow({
               ></div>
             )}
 
-            {(isUKGame) && (
+            {isUKGame && (
               <div
                 className="absolute inset-0 opacity-20"
                 style={{
                   backgroundImage: `url("/flags/UK.png")`,
-                  backgroundSize: '150% 150%',
+                  backgroundSize: 'contain',
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',
-                  zIndex: 0
+                  transform: 'scale(1.5, 1.3)', // width, height scale
+                  transformOrigin: 'center',
+                  zIndex: 0,
+                  pointerEvents: 'none',
                 }}
               ></div>
             )}
