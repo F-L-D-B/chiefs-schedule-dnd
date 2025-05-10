@@ -51,7 +51,7 @@ const getWeekDates = () => {
 
     for (let week = 0; week < 18; week++) {
         const thursdayDate = new Date(baseDate.getTime() + week * msPerWeek);
-        const fridayDate = new Date(thursdayDate.getTime() + 2 * 24 * 60 * 60 * 1000);
+        const fridayDate = new Date(thursdayDate.getTime() + 1 * 24 * 60 * 60 * 1000);
         const sundayDate = new Date(thursdayDate.getTime() + 3 * 24 * 60 * 60 * 1000);
         const mondayDate = new Date(thursdayDate.getTime() + 4 * 24 * 60 * 60 * 1000);
 
