@@ -545,15 +545,11 @@ const WeekRow = memo(function WeekRow({
         : isUKGame
         ? {
             backgroundImage: "url('/flags/UK.png')",
-            backgroundSize: 'cover',
+            backgroundSize: '100% 80%',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
           }
     : {};
-
-    const weekTextClass = isUKGame
-      ? 'text-[#1E3A8A] font-semibold' // Slate blue
-      : 'text-gray-300';
 
     return (
         <div
@@ -563,13 +559,21 @@ const WeekRow = memo(function WeekRow({
 
 
             {/* Week Info (Fixed width) */}
-            <div className={`w-24 flex flex-col items-start text-sm ${weekTextClass}`}>
-                <span className='font-semibold text-white'>Week {weekNum}</span>
-                <span>{gameDate.split('•')[0].trim()}</span>
-                {gameDate.includes('•') && (
-                    <span>{gameDate.split('•')[1].trim()}</span>
-                )}
+            <div className="w-24 flex flex-col items-start text-sm">
+              <span className={isUKGame ? 'font-semibold text-blue-500' : 'font-semibold text-white'}>
+                Week {weekNum}
+              </span>
+              <span className={isUKGame ? 'text-[#1E3A8A]' : 'text-gray-300'}>
+                {gameDate.split('•')[0].trim()}
+              </span>
+              {gameDate.includes('•') && (
+                <span className={isUKGame ? 'text-[#1E3A8A]' : 'text-gray-300'}>
+                  {gameDate.split('•')[1].trim()}
+                </span>
+              )}
             </div>
+
+
 
             {/* Drop Zone */}
             <div className='flex-grow'>
