@@ -525,45 +525,33 @@ const WeekRow = memo(function WeekRow({
         }
     };
 
-    const isBrazilGame =
-    weekNum === 1 &&
-    item.tag === 'FNF' &&
-    item.team?.name === 'Chargers (Away)';
-
-    const isUKGame =
-    item.tag === 'INT' &&
-    item.team?.name === 'Jaguars (Away)';
-
-    const cardStyle =
-      isBrazilGame
-        ? {
-            backgroundImage: "url('/flags/brazil.png')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }
-        : isUKGame
-        ? {
-            backgroundImage: "url('/flags/UK.png')",
-            backgroundSize: '100% 100%',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }
-    : {};
-
     return (
         <div
-        className='mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4'
+        className='relative mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 overflow-hidden'
         style={cardStyle}
         >
 
+            {(isBrazilGame || isUKGame) && (
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage: `url(${isBrazilGame ? "/flags/brazil.png" : "/flags/UK.png"})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                  zIndex: 0
+                }}
+              ></div>
+            )}
+
 
             {/* Week Info (Fixed width) */}
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-start gap-4 w-full">
             <div className="w-24 flex flex-col items-start text-sm">
               <span className={isUKGame ? 'font-semibold text-white bg-blue-700 px-1 rounded' : 'font-semibold text-white'}>
                 Week {weekNum}
               </span>
-              <span className={isUKGame ? 'text-white bg-blue-700 px-1 rounded' : 'text-gray-300'}>
+              <span className={isUKGame ? 'text-white px-1 rounded' : 'text-gray-300'}>
                 {gameDate.split('•')[0].trim()}
               </span>
               {gameDate.includes('•') && (
@@ -629,6 +617,7 @@ const WeekRow = memo(function WeekRow({
                 )}
             </div>
         </div>
+    </div>
 
     );
 });
