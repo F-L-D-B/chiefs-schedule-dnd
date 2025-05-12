@@ -545,7 +545,7 @@ const WeekRow = memo(function WeekRow({
     itme.tag === 'TGIV'
     
     const isBlackFridayGame =
-    itme.tag === 'TGIV'
+    itme.tag === 'BLK'
 
     return (
         <div
