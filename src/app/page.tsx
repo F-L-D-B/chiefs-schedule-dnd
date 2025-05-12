@@ -658,7 +658,7 @@ const WeekRow = memo(function WeekRow({
                         if (tag.value === 'XMAS') return false;
                     
                         // Hide Thanksgiving and Black Friday unless it's Week 12
-                        if ((tag.value === 'THANKS' || tag.value === 'BLACKFRIDAY') && id !== 'week-12') {
+                        if ((tag.value === 'TGIV' || tag.value === 'BLK') && id !== 'week-12') {
                           return false;
                         }
                     
