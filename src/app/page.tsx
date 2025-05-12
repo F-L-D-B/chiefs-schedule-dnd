@@ -652,17 +652,24 @@ const WeekRow = memo(function WeekRow({
                     disabled={id === 'week-17'}
                     className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300 ${id === 'week-17' ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
-                    {gameTags.map((tag) => (
-                        <option
-                            key={tag.value}
-                            value={tag.value}
-                            disabled={id !== 'week-17' && tag.value === 'XMAS'}
-                        >
-                            {tag.label}
+                    {gameTags
+                      .filter(tag => {
+                        // Hide Christmas tag entirely
+                        if (tag.value === 'XMAS') return false;
+                    
+                        // Hide Thanksgiving and Black Friday unless it's Week 12
+                        if ((tag.value === 'THANKS' || tag.value === 'BLACKFRIDAY') && id !== 'week-12') {
+                          return false;
+                        }
+                    
+                        return true;
+                      })
+                      .map(tag => (
+                        <option key={tag.value} value={tag.value}>
+                          {tag.label}
                         </option>
                     ))}
                 </select>
-
 
                 {item.tag === '' && id !== 'week-17' && (
                     <select
