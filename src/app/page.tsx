@@ -653,11 +653,9 @@ const WeekRow = memo(function WeekRow({
                     className={`bg-gray-800 text-sm rounded-md px-2 py-1 border border-gray-700 text-gray-300 ${id === 'week-17' ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
 
-                    {!gameTags.some(tag => tag.value === item.tag) && (
-                        <option value={item.tag}>
-                          {item.tag === 'XMAS' ? 'Christmas Game' : item.tag}
-                        </option>
-                    )}
+                    {item.tag === 'XMAS' && (
+                        <option value='XMAS'>Christmas Game</option>
+                      )}
                     
                     {gameTags
                       .filter(tag => {
