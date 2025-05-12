@@ -13,7 +13,7 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 // Game Tags
-type GameTag = 'TNF' | 'FNF' | 'SNF' | 'MNF' | 'INT' | 'XMAS' | 'BYE' | '';
+type GameTag = 'TNF' | 'FNF' | 'SNF' | 'MNF' | 'INT' | 'TGIV' | 'BLK' | 'XMAS' | 'BYE' | '';
 
 interface Team {
     id: string;
@@ -38,6 +38,8 @@ const gameTags: { value: GameTag; label: string }[] = [
     { value: 'SNF', label: 'Sunday Night Football' },
     { value: 'MNF', label: 'Monday Night Football' },
     { value: 'INT', label: 'International Game' },
+    { value: 'TGIV', label: 'Thanksgiving Game' },
+    { value: 'BLK', label: 'Black Friday Game' },
     { value: 'XMAS', label: 'Christmas Game' },
     { value: 'BYE', label: 'Bye Week' },
     { value: '', label: 'Regular Game' },
@@ -310,6 +312,12 @@ export default function Home() {
             case 'INT':
                 time = '8:30 AM';
                 return `${formatDate(dates.sunday)} • ${time}`;
+            case 'TGIV':
+                const tgivDate = new Date(2025, 10, 27);
+                return `${formatDate(tgivDate)} • 11:30 AM / 3:30 PM`
+            case 'BLK':
+                const blkDate = new Date(2025, 10, 28);
+                return `${formatDate(blkDate)} • 2:00 PM`
             case 'XMAS':
                 const xmasDate = new Date(2025, 11, 25); // December 25, 2025
                 return `${formatDate(xmasDate)} • 12:00 PM / 3:30 PM`;
@@ -533,6 +541,12 @@ const WeekRow = memo(function WeekRow({
     item.tag === 'INT' &&
     item.team?.name === 'Jaguars (Away)';
 
+    const isThanksgivingGame =
+    itme.tag === 'TGIV'
+    
+    const isBlackFridayGame =
+    itme.tag === 'TGIV'
+
     return (
         <div
         className='relative mb-4 p-4 rounded-lg border border-gray-700 shadow-sm flex flex-col sm:flex-row sm:items-start gap-4 overflow-hidden'
@@ -564,7 +578,31 @@ const WeekRow = memo(function WeekRow({
               ></div>
             )}
 
-
+            {isThanksgivingGame && (
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage: `url("/flags/thanksgiving.png")`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                  zIndex: 0,
+                }}
+              ></div>
+            )}
+            
+            {isBlackFridayGame && (
+              <div
+                className="absolute inset-0 opacity-20"
+                style={{
+                  backgroundImage: `url("/flags/blackfriday.png")`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                  zIndex: 0,
+                }}
+              ></div>
+            )}
 
             {/* Week Info (Fixed width) */}
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-start gap-4 w-full">
