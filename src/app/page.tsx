@@ -13,7 +13,7 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import Image from 'next/image';
 
 // Game Tags
-type GameTag = 'TNF' | 'FNF' | 'SNF' | 'MNF' | 'INT' | 'TGIV' | 'BLK' | 'XMAS' | 'BYE' | '';
+type GameTag = 'TNF' | 'FNF' | 'SNF' | 'MNF' | 'TGIV' | 'BLK' | 'XMAS' | 'BYE' | '';
 
 interface Team {
     id: string;
@@ -37,7 +37,6 @@ const gameTags: { value: GameTag; label: string }[] = [
     { value: 'FNF', label: 'Friday Night Football' },
     { value: 'SNF', label: 'Sunday Night Football' },
     { value: 'MNF', label: 'Monday Night Football' },
-    { value: 'INT', label: 'International Game' },
     { value: 'TGIV', label: 'Thanksgiving Game' },
     { value: 'BLK', label: 'Black Friday Game' },
     { value: 'XMAS', label: 'Christmas Game' },
@@ -309,9 +308,6 @@ export default function Home() {
             case 'SNF':
                 time = '7:20 PM';
                 return `${formatDate(dates.sunday)} • ${time}`;
-            case 'INT':
-                time = '8:30 AM';
-                return `${formatDate(dates.sunday)} • ${time}`;
             case 'TGIV':
                 const tgivDate = new Date(2025, 10, 27);
                 return `${formatDate(tgivDate)} • 11:30 AM / 3:30 PM`
@@ -526,7 +522,6 @@ const WeekRow = memo(function WeekRow({
             case 'FNF': return "bg-orange-900";
             case 'SNF': return 'bg-yellow-900';
             case 'MNF': return 'bg-white';
-            case 'INT': return 'bg-green-900';
             case 'XMAS': return 'bg-red-900';
             case 'BYE': return 'bg-gray-900';
             default: return '';
@@ -536,10 +531,6 @@ const WeekRow = memo(function WeekRow({
     const isBrazilGame =
     item.tag === 'FNF' &&
     item.team?.name === 'Chargers (Away)';
-
-    const isUKGame =
-    item.tag === 'INT' &&
-    item.team?.name === 'Jaguars (Away)';
 
     const isThanksgivingGame =
     item.tag === 'TGIV'
@@ -561,19 +552,6 @@ const WeekRow = memo(function WeekRow({
                   backgroundPosition: 'center',
                   backgroundRepeat: 'no-repeat',
                   zIndex: 0
-                }}
-              ></div>
-            )}
-
-            {isUKGame && (
-              <div
-                className="absolute inset-0 opacity-20"
-                style={{
-                  backgroundImage: `url("/flags/UK.png")`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
-                  zIndex: 0,
                 }}
               ></div>
             )}
@@ -607,14 +585,14 @@ const WeekRow = memo(function WeekRow({
             {/* Week Info (Fixed width) */}
             <div className="relative z-10 flex flex-col sm:flex-row sm:items-start gap-4 w-full">
             <div className="w-24 flex flex-col items-start text-sm">
-              <span className={isUKGame ? 'font-semibold text-white px-1 rounded' : 'font-semibold text-white'}>
+              <span className='font-semibold text-white'>
                 Week {weekNum}
               </span>
-              <span className={isUKGame ? 'text-white px-1 rounded' : 'text-gray-300'}>
+              <span className='text-gray-300'>
                 {gameDate.split('•')[0].trim()}
               </span>
               {gameDate.includes('•') && (
-                <span className={isUKGame ? 'text-white px-1 rounded' : 'text-gray-300'}>
+                <span className='text-gray-300'>
                   {gameDate.split('•')[1].trim()}
                 </span>
               )}
